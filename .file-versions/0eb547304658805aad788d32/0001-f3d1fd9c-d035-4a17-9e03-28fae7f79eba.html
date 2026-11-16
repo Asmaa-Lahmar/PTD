@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portail Scolarité · Prototype</title>
+<link rel="stylesheet" href="assets/portail.css">
+<style>
+  .wrap-x { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--container-gutter-desktop); }
+  .hero { padding: var(--section-y-tablet) 0 var(--space-12); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-12); align-items: end; }
+  .hero h1 { font-size: clamp(38px, 5.4vw, 64px); line-height: 1.06; }
+  .hero .lead { margin-top: var(--space-5); max-width: 36em; }
+  .pb { padding: var(--space-6); border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border-soft); }
+  .pb p + p { margin-top: var(--space-3); }
+  .pb .eyebrow { margin-bottom: 4px; }
+  .sec { padding: var(--space-12) 0; border-top: 1px solid var(--border-soft); }
+  .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  .sec-head h2 { font-size: clamp(28px, 3vw, 40px); }
+  .screens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+  .screens.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scr { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-6); background: var(--surface); border-radius: var(--radius-md); box-shadow: 0 0 0 1px var(--border-soft); color: var(--fg); text-decoration: none !important; transition: box-shadow var(--motion-fast) var(--ease-standard); min-height: 190px; }
+  .scr:hover { box-shadow: 0 0 0 1px var(--ring-warm), var(--elev-raised); }
+  .scr h3 { font-size: 24px; }
+  .scr p { color: var(--muted); font-size: 15px; }
+  .scr .go { margin-top: auto; font-size: var(--text-sm); color: var(--fg-2); font-weight: 500; }
+  .scr:hover .go { color: var(--accent); }
+  .grp { margin-bottom: var(--space-8); }
+  .grp > .row-between { margin-bottom: var(--space-3); }
+  .flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; counter-reset: s; }
+  .flow > div { position: relative; padding: var(--space-5) var(--space-5) var(--space-5) 0; }
+  .flow > div::before { counter-increment: s; content: counter(s, decimal-leading-zero); display: block; font-family: var(--font-display); font-size: 15px; color: var(--meta); margin-bottom: var(--space-2); }
+  .flow > div::after { content: ""; position: absolute; top: 33px; left: 34px; right: 12px; height: 1px; background: var(--ring-warm); }
+  .flow > div:last-child::after { display: none; }
+  .flow h4 { font-family: var(--font-body); font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .flow p { font-size: var(--text-sm); color: var(--muted); line-height: 1.5; }
+  .flow .badge { margin-bottom: 8px; }
+  .dark { background: var(--fg); color: var(--surface); padding: var(--section-y-tablet) 0; }
+  .dark .eyebrow { color: var(--meta); }
+  .dark h2 { color: var(--surface); font-size: clamp(28px, 3vw, 40px); }
+  .dark .lead { color: var(--surface-warm); opacity: .8; }
+  .map { width: 100%; border-collapse: collapse; margin-top: var(--space-8); font-size: 15px; }
+  .map th { text-align: left; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--meta); padding: 0 var(--space-4) var(--space-3) 0; border-bottom: 1px solid color-mix(in oklab, var(--fg), var(--surface) 18%); }
+  .map td { padding: var(--space-4) var(--space-4) var(--space-4) 0; border-bottom: 1px solid color-mix(in oklab, var(--fg), var(--surface) 12%); vertical-align: top; color: var(--surface-warm); }
+  .map td:first-child { color: var(--surface); font-weight: 500; white-space: nowrap; }
+  .map code { font-family: var(--font-mono); font-size: 13px; color: var(--surface); background: color-mix(in oklab, var(--fg), var(--surface) 10%); padding: 1px 6px; border-radius: 4px; }
+  .foot { padding: var(--space-8) 0 var(--space-12); display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; align-items: center; }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: var(--space-6); padding-top: var(--space-8); }
+    .screens, .screens.two { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .flow > div { padding: 0 0 var(--space-5) 44px; }
+    .flow > div::before { position: absolute; left: 0; top: 0; }
+    .flow > div::after { top: 26px; left: 12px; right: auto; bottom: 4px; width: 1px; height: auto; }
+    .map thead { display: none; }
+    .map tr { display: block; padding: var(--space-4) 0; border-bottom: 1px solid color-mix(in oklab, var(--fg), var(--surface) 12%); }
+    .map td { display: block; border: 0; padding: 2px 0; }
+  }
+  @media (max-width: 600px) { .wrap-x { padding: 0 var(--container-gutter-phone); } }
+</style>
+</head>
+<body>
+<header class="s-top"><div class="s-top-inner"><a class="brand" href="index.html"><b>Portail Scolarité</b><small>Université — nom à préciser</small></a><span class="badge plain" style="margin-left:auto">Prototype</span></div></header>
+
+<main>
+  <div class="wrap-x">
+    <section class="hero" data-od-id="launcher-hero">
+      <div>
+        <p class="eyebrow">Demandes administratives étudiantes</p>
+        <h1 data-od-id="launcher-title">Une seule porte d’entrée pour chaque document de scolarité.</h1>
+        <p class="lead">L’étudiant·e dépose sa demande en ligne, le workflow la dirige vers le bon service, et chacun suit l’avancement en temps réel, du dépôt jusqu’au document prêt.</p>
+        <div class="row wrap" style="margin-top:var(--space-6)">
+          <a class="btn btn-primary" href="nouvelle-demande.html" data-od-id="cta-start">Commencer par une demande</a>
+          <a class="btn btn-secondary" href="file-traitement.html">Ouvrir le back-office</a>
+        </div>
+      </div>
+      <div class="pb" data-od-id="problem-solution">
+        <p class="eyebrow">Avant</p>
+        <p class="body-muted">Des demandes dispersées entre e-mails, formulaires papier et passages au guichet ; aucune visibilité sur leur avancement.</p>
+        <p class="eyebrow" style="margin-top:var(--space-4)">Avec le portail</p>
+        <p>Un formulaire qui s’adapte au document, un acheminement automatique, des notifications à chaque étape et des indicateurs de délai pour la scolarité.</p>
+      </div>
+    </section>
+
+    <section class="sec" data-od-id="screens">
+      <div class="grp">
+        <div class="row-between"><h2 style="font-size:24px">Espace étudiant</h2><span class="meta">Responsive · pensé d’abord pour le mobile</span></div>
+        <div class="screens">
+          <a class="scr" href="nouvelle-demande.html" data-od-id="screen-new-request"><span class="eyebrow">Formulaire intelligent</span><h3>Nouvelle demande</h3><p>Cinq types de documents ; les champs, justificatifs et délais s’ajustent aux réponses.</p><span class="go">Ouvrir l’écran →</span></a>
+          <a class="scr" href="mes-demandes.html" data-od-id="screen-my-requests"><span class="eyebrow">Suivi</span><h3>Mes demandes</h3><p>Étapes, historique, date estimée ; réponse directe quand un complément est demandé.</p><span class="go">Ouvrir l’écran →</span></a>
+          <a class="scr" href="notifications.html" data-od-id="screen-notifications"><span class="eyebrow">Notifications automatiques</span><h3>Notifications</h3><p>Chaque changement de statut, avec le choix des canaux : e-mail, SMS, Teams.</p><span class="go">Ouvrir l’écran →</span></a>
+        </div>
+      </div>
+      <div class="grp" style="margin-bottom:0">
+        <div class="row-between"><h2 style="font-size:24px">Espace scolarité</h2><span class="meta">Desktop · agents et responsables</span></div>
+        <div class="screens two">
+          <a class="scr" href="file-traitement.html" data-od-id="screen-queue"><span class="eyebrow">Workflow</span><h3>File de traitement</h3><p>Demandes triées par échéance ; prise en charge, complément, validation, refus ou transfert en un clic.</p><span class="go">Ouvrir l’écran →</span></a>
+          <a class="scr" href="tableau-de-bord.html" data-od-id="screen-dashboard"><span class="eyebrow">Pilotage</span><h3>Tableau de bord</h3><p>Demandes en attente, délai moyen, volume par catégorie et taux de respect du délai cible.</p><span class="go">Ouvrir l’écran →</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" data-od-id="workflow">
+      <div class="sec-head"><div><p class="eyebrow">Cycle de vie d’une demande</p><h2>Le workflow automatisé</h2></div><p class="meta" style="max-width:28em">Chaque transition déclenche une notification à l’étudiant·e et s’inscrit dans l’historique.</p></div>
+      <div class="flow">
+        <div><span class="badge st-soumise">Soumise</span><h4>Dépôt</h4><p>Formulaire validé, référence attribuée, accusé de réception.</p></div>
+        <div><span class="badge plain">Automatique</span><h4>Acheminement</h4><p>Le type de document détermine le service et le délai cible en jours ouvrés.</p></div>
+        <div><span class="badge st-en_cours">En cours</span><h4>Traitement</h4><p>Un agent prend la demande ; il peut la transférer s’il n’est pas compétent.</p></div>
+        <div><span class="badge st-info_requise">Complément</span><h4>Information requise</h4><p>Message à l’étudiant·e ; sa réponse relance automatiquement le traitement.</p></div>
+        <div><span class="badge st-prete">Prête</span> <span class="badge st-refusee">Refusée</span><h4>Clôture</h4><p>Document mis à disposition, ou refus motivé avec la marche à suivre.</p></div>
+      </div>
+    </section>
+
+    <section class="sec" data-od-id="demo-script">
+      <div class="sec-head"><div><p class="eyebrow">Démonstration en 2 minutes</p><h2>Scénario conseillé</h2></div></div>
+      <ol class="stack-3 body-muted" style="padding-left:1.2em;margin:0;max-width:46em;font-size:17px">
+        <li><a href="nouvelle-demande.html?type=releve">Déposer un relevé de notes</a> : choisir « Anglais » fait apparaître un champ supplémentaire et allonge le délai estimé.</li>
+        <li>Dans la <a href="file-traitement.html">file de traitement</a>, ouvrir la demande d’Inès Benali, la prendre en charge puis demander un complément.</li>
+        <li>Revenir aux <a href="notifications.html">notifications</a> étudiantes : le message est arrivé ; y répondre depuis <a href="mes-demandes.html">Mes demandes</a>.</li>
+        <li>Marquer la demande comme prête, puis voir l’effet sur le <a href="tableau-de-bord.html">tableau de bord</a>.</li>
+      </ol>
+      <p class="meta" style="margin-top:var(--space-4)">Astuce : ouvrez l’espace étudiant et le back-office dans deux onglets : ils se synchronisent en direct.</p>
+    </section>
+  </div>
+
+  <section class="dark" data-od-id="power-platform">
+    <div class="wrap-x">
+      <p class="eyebrow">Transposition low-code</p>
+      <h2>Du prototype à Power Apps + Power Automate</h2>
+      <p class="lead" style="margin-top:var(--space-3);max-width:40em">Chaque brique du prototype a son équivalent direct dans Microsoft Power Platform.</p>
+      <table class="map">
+        <thead><tr><th>Brique</th><th>Power Platform</th><th>Détail de mise en œuvre</th></tr></thead>
+        <tbody>
+          <tr><td>Données</td><td>Dataverse</td><td>Tables <code>Demande</code>, <code>TypeDocument</code> (service, délai cible, champs requis), <code>Historique</code>, <code>Notification</code> ; colonne de choix <code>Statut</code>.</td></tr>
+          <tr><td>Formulaire intelligent</td><td>Power Apps (canevas)</td><td>Propriété <code>Visible</code> de chaque champ conditionnée au type et aux réponses ; <code>Patch()</code> à l’envoi ; profil pré-rempli via <code>User()</code>.</td></tr>
+          <tr><td>Acheminement</td><td>Power Automate</td><td>Déclencheur « Lorsqu’une ligne est ajoutée » → recherche du <code>TypeDocument</code> → affectation du service et calcul de l’échéance en jours ouvrés.</td></tr>
+          <tr><td>Notifications</td><td>Power Automate</td><td>Déclencheur « Lorsqu’une ligne est modifiée » filtré sur <code>Statut</code> → e-mail Outlook, message Teams, SMS selon les préférences.</td></tr>
+          <tr><td>Complément / relances</td><td>Approbations + flux planifié</td><td>Flux quotidien : relance des compléments sans réponse sous 3 jours et alerte des responsables sur les demandes proches de l’échéance.</td></tr>
+          <tr><td>Tableau de bord</td><td>Power BI ou écran Power Apps</td><td>Mesures : en attente, délai moyen (<code>NETWORKDAYS</code>), % dans le délai cible, volume par catégorie et par semaine.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="wrap-x foot">
+    <p class="meta">Prototype interactif · données de démonstration enregistrées dans ce navigateur.</p>
+    <button class="btn btn-ghost btn-sm" id="reset" data-od-id="btn-reset-demo">Réinitialiser les données de démonstration</button>
+  </div>
+</main>
+<script src="assets/portail.js"></script>
+<script>
+  document.getElementById('reset').addEventListener('click', () => { P.reset(); P.toast('Données de démonstration réinitialisées.'); });
+</script>
+</body>
+</html>

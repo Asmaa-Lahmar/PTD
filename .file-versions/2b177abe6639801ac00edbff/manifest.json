@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "fileName": "sauvegarde-uniflow/statistiques.html",
+  "currentVersionId": "64e3b130-e925-40ab-bae4-dbf5e1b46afe",
+  "entries": [
+    {
+      "id": "64e3b130-e925-40ab-bae4-dbf5e1b46afe",
+      "fileName": "sauvegarde-uniflow/statistiques.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1794839244683,
+      "source": "ai",
+      "prompt": "tout, je veux le systeme designe precedent, et pas le actuelle qui apparaitre sur ce page",
+      "size": 72345,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-64e3b130-e925-40ab-bae4-dbf5e1b46afe.html",
+      "contentDigest": "c1cc51df55bd54687871c31a41e39620ad2d417ca8f4adc36a479b0c82347fcb",
+      "promptSource": "message"
+    }
+  ]
+}

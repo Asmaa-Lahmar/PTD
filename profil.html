@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon profil · Portail Scolarité</title>
+<link rel="stylesheet" href="assets/portail.css">
+<style>
+  .p-head { margin-bottom: var(--space-6); }
+  .p-grid { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+  .id-card { text-align: center; }
+  .avatar.xl { width: 88px; height: 88px; font-size: 30px; font-family: var(--font-display); font-weight: 500; margin: 0 auto var(--space-4); }
+  .id-card h2 { font-size: 28px; }
+  .kv { margin: var(--space-5) 0 var(--space-4); text-align: left; }
+  .kv div { display: flex; flex-direction: column; gap: 2px; padding: var(--space-3) 0; border-top: 1px solid var(--border); }
+  .kv dt { font-size: 12px; letter-spacing: .3px; text-transform: uppercase; color: var(--meta); font-weight: 500; }
+  .kv dd { margin: 0; font-size: 15px; overflow-wrap: anywhere; }
+  .id-card .field-help { text-align: left; }
+  .counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); margin: var(--space-4) 0; }
+  .count-box { padding: var(--space-3); background: var(--bg); border-radius: var(--radius-sm); }
+  .count-box b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .count-box span { font-size: 12px; color: var(--muted); }
+  .sec-title { font-size: 22px; margin-bottom: 4px; }
+  .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-5); }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--border); }
+  .form-actions .meta { margin-left: auto; font-size: 13px; }
+  .channel { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) 0; border-top: 1px solid var(--border); }
+  .channel:first-of-type { border-top: 0; }
+  .channel small { display: block; font-size: 13px; color: var(--meta); overflow-wrap: anywhere; }
+  .hint-warn { margin-top: var(--space-3); padding: 10px 12px; border-radius: var(--radius-sm); background: var(--warn-tint); color: var(--warn-ink); font-size: var(--text-sm); }
+  @media (max-width: 900px) {
+    .p-grid { grid-template-columns: 1fr; gap: var(--space-5); }
+  }
+  @media (max-width: 560px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-actions .meta { margin-left: 0; width: 100%; }
+    .form-actions .btn { flex: 1; }
+  }
+</style>
+</head>
+<body>
+<header id="s-top"></header>
+<main class="s-main" data-od-id="profile">
+  <div class="p-head">
+    <p class="eyebrow">Mon compte</p>
+    <h1 data-od-id="profile-title">Mon profil</h1>
+  </div>
+
+  <div class="p-grid">
+    <aside class="stack-4">
+      <section class="card id-card" data-od-id="profile-identity">
+        <div class="avatar xl" id="p-initials" aria-hidden="true"></div>
+        <h2 id="p-name"></h2>
+        <p class="body-muted" id="p-prog"></p>
+        <dl class="kv">
+          <div><dt>Numéro étudiant</dt><dd class="mono" id="p-id"></dd></div>
+          <div><dt>E-mail universitaire</dt><dd id="p-mail"></dd></div>
+          <div><dt>Établissement</dt><dd id="p-univ"></dd></div>
+        </dl>
+        <p class="field-help">Ces informations viennent de votre dossier d’inscription. Une erreur ? Signalez-la à la scolarité de votre composante.</p>
+        <button type="button" class="btn btn-secondary btn-block" data-logout data-od-id="btn-logout" style="margin-top:var(--space-4)">Se déconnecter</button>
+      </section>
+
+      <section class="card" data-od-id="profile-activity">
+        <h2 class="sec-title">Mes demandes</h2>
+        <div class="counts" id="counts"></div>
+        <a class="btn btn-secondary btn-block" href="mes-demandes.html" data-od-id="link-my-requests">Suivre mes demandes</a>
+      </section>
+    </aside>
+
+    <div class="stack-4">
+      <form class="card" id="contact" novalidate data-od-id="profile-contact-form">
+        <h2 class="sec-title">Coordonnées de contact</h2>
+        <p class="body-sm body-muted">Elles permettent à la scolarité de vous joindre au sujet d’une demande. Tous les champs sont facultatifs.</p>
+        <div class="form-grid">
+          <div class="field" id="f-tel">
+            <label for="tel">Téléphone mobile</label>
+            <input type="text" inputmode="tel" autocomplete="tel" id="tel" placeholder="06 12 34 56 78" aria-describedby="tel-msg">
+            <span class="field-help" id="tel-msg">Nécessaire pour recevoir les SMS.</span>
+          </div>
+          <div class="field" id="f-mail">
+            <label for="mail2">E-mail personnel</label>
+            <input type="email" autocomplete="email" id="mail2" placeholder="prenom.nom@exemple.fr" aria-describedby="mail2-msg">
+            <span class="field-help" id="mail2-msg">En secours de l’adresse universitaire.</span>
+          </div>
+          <div class="field full" id="f-adr">
+            <label for="adr">Adresse postale</label>
+            <textarea id="adr" autocomplete="street-address" maxlength="240" placeholder="Numéro et rue, code postal, ville" aria-describedby="adr-msg"></textarea>
+            <span class="field-help" id="adr-msg">Pour l’envoi de documents papier.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit" id="save" data-od-id="btn-save-profile" disabled>Enregistrer</button>
+          <button class="btn btn-ghost" type="button" id="cancel" data-od-id="btn-cancel-profile" disabled>Annuler</button>
+          <span class="meta" id="saved-at"></span>
+        </div>
+      </form>
+
+      <section class="card" data-od-id="profile-notifications">
+        <div class="row-between wrap" style="margin-bottom:var(--space-3)">
+          <div><h2 class="sec-title">Canaux de notification</h2><p class="body-sm body-muted">Prévenu·e à chaque changement de statut.</p></div>
+          <a class="btn btn-secondary btn-sm" href="notifications.html" data-od-id="link-notification-preferences">Régler les préférences</a>
+        </div>
+        <div id="channels"></div>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="assets/portail.js"></script>
+<script>
+(function () {
+  const $ = s => document.querySelector(s);
+  const FIELDS = { tel: $('#tel'), mail2: $('#mail2'), adr: $('#adr') };
+  const HELP = { tel: 'Nécessaire pour recevoir les SMS.', mail2: 'En secours de l’adresse universitaire.', adr: 'Pour l’envoi de documents papier.' };
+  const WRAP = { tel: $('#f-tel'), mail2: $('#f-mail'), adr: $('#f-adr') };
+  const saved = () => Object.assign({ tel: '', mail2: '', adr: '', at: null }, P.state.profile || {});
+
+  $('#p-initials').textContent = P.ME.initials;
+  $('#p-name').textContent = P.ME.name;
+  $('#p-prog').textContent = P.ME.programme;
+  $('#p-id').textContent = P.ME.id;
+  $('#p-mail').textContent = P.ME.email;
+  $('#p-univ').textContent = P.UNIVERSITE;
+
+  function check(k, v) {
+    if (!v) return '';
+    if (k === 'tel') return /^(?:\+\d{8,14}|0\d{9})$/.test(v.replace(/[\s.\-]/g, '')) ? '' : 'Numéro non reconnu. Exemple : 06 12 34 56 78.';
+    if (k === 'mail2') return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : 'Adresse e-mail incomplète. Exemple : prenom.nom@exemple.fr.';
+    return '';
+  }
+  function setMsg(k, err) {
+    const m = $('#' + k + '-msg');
+    WRAP[k].classList.toggle('invalid', !!err);
+    m.className = err ? 'field-error' : 'field-help';
+    m.textContent = err || HELP[k];
+    FIELDS[k].setAttribute('aria-invalid', err ? 'true' : 'false');
+  }
+  const values = () => ({ tel: FIELDS.tel.value.trim(), mail2: FIELDS.mail2.value.trim(), adr: FIELDS.adr.value.trim() });
+  function dirty() { const s = saved(), v = values(); return ['tel', 'mail2', 'adr'].some(k => s[k] !== v[k]); }
+  function syncButtons() { const d = dirty(); $('#save').disabled = !d; $('#cancel').disabled = !d; }
+
+  function fill() {
+    const s = saved();
+    Object.keys(FIELDS).forEach(k => { FIELDS[k].value = s[k]; setMsg(k, ''); });
+    $('#saved-at').textContent = s.at ? 'Dernière mise à jour ' + P.fmtRel(s.at) : '';
+    syncButtons();
+  }
+
+  function renderSide() {
+    P.mountStudent('profil');
+    const mine = P.mineList();
+    const open = mine.filter(r => P.OPEN.includes(r.status)).length;
+    const ready = mine.filter(r => r.status === 'prete').length;
+    $('#counts').innerHTML = [[open, 'en cours'], [ready, ready > 1 ? 'prêtes' : 'prête'], [mine.length, 'au total']].map(([n, l]) => '<div class="count-box"><b>' + n + '</b><span>' + l + '</span></div>').join('');
+    const s = saved(), prefs = P.state.prefs;
+    const rows = [['email', 'E-mail', P.ME.email], ['sms', 'SMS', s.tel || 'Aucun numéro renseigné'], ['push', 'Teams / mobile', 'Application de l’université']];
+    $('#channels').innerHTML = rows.map(([k, l, sub]) => '<div class="channel" data-od-id="channel-' + k + '"><span>' + l + '<small>' + P.esc(sub) + '</small></span>' +
+      (prefs[k] ? '<span class="badge st-prete">Activé</span>' : '<span class="badge plain">Désactivé</span>') + '</div>').join('') +
+      (prefs.sms && !s.tel ? '<p class="hint-warn" role="note">Le SMS est activé, mais aucun numéro mobile n’est enregistré : ajoutez-le ci-dessus pour le recevoir.</p>' : '');
+  }
+
+  Object.keys(FIELDS).forEach(k => {
+    FIELDS[k].addEventListener('input', () => { if (WRAP[k].classList.contains('invalid')) setMsg(k, check(k, FIELDS[k].value.trim())); syncButtons(); });
+    FIELDS[k].addEventListener('blur', () => setMsg(k, check(k, FIELDS[k].value.trim())));
+  });
+  $('#cancel').addEventListener('click', fill);
+  $('#contact').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = values(); let first = null;
+    Object.keys(FIELDS).forEach(k => { const err = check(k, v[k]); setMsg(k, err); if (err && !first) first = FIELDS[k]; });
+    if (first) { first.focus(); return; }
+    P.state.profile = Object.assign(v, { at: Date.now() });
+    P.save(); fill(); renderSide();
+    P.toast('<b>Coordonnées enregistrées.</b> La scolarité utilisera ces informations pour vous joindre.');
+  });
+  window.addEventListener('beforeunload', e => { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+  P.onExternalChange(() => { renderSide(); if (!dirty()) fill(); });
+  renderSide(); fill();
+})();
+</script>
+</body>
+</html>

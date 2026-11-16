@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "fileName": "tableau-de-bord.html",
+  "entries": [
+    {
+      "id": "32724d43-4bc9-4021-b605-183ae3375325",
+      "fileName": "tableau-de-bord.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1792064629810,
+      "source": "ai",
+      "prompt": "Continue from the stopped or incomplete turn. Read the conversation, current project files, and any visible errors, then take the next concrete step. If a primary artifact already exists, update it in place; otherwise create the missing primary artifact and summarize what changed.",
+      "size": 14068,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-32724d43-4bc9-4021-b605-183ae3375325.html",
+      "promptSource": "message"
+    }
+  ]
+}

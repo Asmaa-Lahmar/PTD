@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "fileName": "sauvegarde-uniflow/tableau-de-bord.html",
+  "currentVersionId": "91a0ab4a-5f4c-4cef-bd1a-8a788fbd4a25",
+  "entries": [
+    {
+      "id": "91a0ab4a-5f4c-4cef-bd1a-8a788fbd4a25",
+      "fileName": "sauvegarde-uniflow/tableau-de-bord.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1794839244718,
+      "source": "ai",
+      "prompt": "tout, je veux le systeme designe precedent, et pas le actuelle qui apparaitre sur ce page",
+      "size": 72363,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-91a0ab4a-5f4c-4cef-bd1a-8a788fbd4a25.html",
+      "contentDigest": "78040e8103e0f8b5c5d2e0d000d6adf1b5239f3c5af49c8945ab56dcb2165dbf",
+      "promptSource": "message"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "fileName": "file-traitement-v2.html",
+  "currentVersionId": "1b6dec8b-5209-4f8c-a4b1-d13700eac1b2",
+  "entries": [
+    {
+      "id": "1b6dec8b-5209-4f8c-a4b1-d13700eac1b2",
+      "fileName": "file-traitement-v2.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1792408634954,
+      "source": "ai",
+      "prompt": "[form answers — continue-project]\n- Que souhaitez-vous poursuivre ?: Compléter les parcours du portail [value: complete_portal]",
+      "size": 18007,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-1b6dec8b-5209-4f8c-a4b1-d13700eac1b2.html",
+      "contentDigest": "2a44a8f9d387cf5770259f911c5ea8bdcca6131e23fa6c18723e5aef8f276531",
+      "promptSource": "message"
+    }
+  ]
+}

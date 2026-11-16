@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "file-traitement-v2.html",
+  "entry": "file-traitement-v2.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-10-19T11:16:14.800Z",
+  "updatedAt": "2026-10-19T11:16:14.800Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

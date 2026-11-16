@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 2,
+  "fileName": "file-traitement.html",
+  "currentVersionId": "8edb8e43-aedc-4e37-aeab-138dec461498",
+  "entries": [
+    {
+      "id": "ffaf20d8-193f-4a21-97bc-4350dd251fe5",
+      "fileName": "file-traitement.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1792064629807,
+      "source": "ai",
+      "prompt": "Continue from the stopped or incomplete turn. Read the conversation, current project files, and any visible errors, then take the next concrete step. If a primary artifact already exists, update it in place; otherwise create the missing primary artifact and summarize what changed.",
+      "size": 18007,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-ffaf20d8-193f-4a21-97bc-4350dd251fe5.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "8edb8e43-aedc-4e37-aeab-138dec461498",
+      "fileName": "file-traitement.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1792408635097,
+      "source": "ai",
+      "prompt": "[form answers — continue-project]\n- Que souhaitez-vous poursuivre ?: Compléter les parcours du portail [value: complete_portal]",
+      "size": 18117,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-8edb8e43-aedc-4e37-aeab-138dec461498.html",
+      "contentDigest": "1b9c846ecb6cbd1483a60dc6bddcc0c56768cbd0abce436ac1e09ed704a28164",
+      "promptSource": "message"
+    }
+  ]
+}

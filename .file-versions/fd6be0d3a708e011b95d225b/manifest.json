@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "fileName": "notifications.html",
+  "entries": [
+    {
+      "id": "e775d2f2-b767-4c04-9a87-516052108305",
+      "fileName": "notifications.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1792064629809,
+      "source": "ai",
+      "prompt": "Continue from the stopped or incomplete turn. Read the conversation, current project files, and any visible errors, then take the next concrete step. If a primary artifact already exists, update it in place; otherwise create the missing primary artifact and summarize what changed.",
+      "size": 6966,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-e775d2f2-b767-4c04-9a87-516052108305.html",
+      "promptSource": "message"
+    }
+  ]
+}

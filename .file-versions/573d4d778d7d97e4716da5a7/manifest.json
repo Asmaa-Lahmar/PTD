@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "fileName": "sauvegarde-uniflow/file-traitement.html",
+  "currentVersionId": "906a2a86-7b4d-46ff-8943-298040824495",
+  "entries": [
+    {
+      "id": "906a2a86-7b4d-46ff-8943-298040824495",
+      "fileName": "sauvegarde-uniflow/file-traitement.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1794839244676,
+      "source": "ai",
+      "prompt": "tout, je veux le systeme designe precedent, et pas le actuelle qui apparaitre sur ce page",
+      "size": 72352,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-906a2a86-7b4d-46ff-8943-298040824495.html",
+      "contentDigest": "d4691ddb187474fe50e22c225ceba163f3f8dfcfc08ad6e631f64ca3fb1fbb5e",
+      "promptSource": "message"
+    }
+  ]
+}

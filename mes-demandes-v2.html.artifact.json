@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "mes-demandes-v2.html",
+  "entry": "mes-demandes-v2.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-10-19T11:16:14.797Z",
+  "updatedAt": "2026-10-19T11:16:14.797Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

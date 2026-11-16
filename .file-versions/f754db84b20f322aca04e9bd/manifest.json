@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "fileName": "mes-demandes-v2.html",
+  "currentVersionId": "3dadc901-b890-48c9-851c-878164273a6d",
+  "entries": [
+    {
+      "id": "3dadc901-b890-48c9-851c-878164273a6d",
+      "fileName": "mes-demandes-v2.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1792408634954,
+      "source": "ai",
+      "prompt": "[form answers — continue-project]\n- Que souhaitez-vous poursuivre ?: Compléter les parcours du portail [value: complete_portal]",
+      "size": 11186,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-3dadc901-b890-48c9-851c-878164273a6d.html",
+      "contentDigest": "29d2323f433319322fb4efb9cd2551523cf62a2812795f08464962b336907976",
+      "promptSource": "message"
+    }
+  ]
+}

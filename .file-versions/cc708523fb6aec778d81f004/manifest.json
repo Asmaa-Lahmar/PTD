@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "fileName": "statistiques.html",
+  "currentVersionId": "08c551f8-842a-47a1-b159-1b3b1649c051",
+  "entries": [
+    {
+      "id": "86c44757-2475-4fde-821d-225825926523",
+      "fileName": "statistiques.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1794839646088,
+      "source": "ai",
+      "prompt": "Recrée les pages profil et statistiques dans le style du Portail Scolarité",
+      "size": 17760,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-86c44757-2475-4fde-821d-225825926523.html",
+      "promptSource": "message",
+      "contentDigest": "b7dc67448ce25d8fbaae01199908224d633707b9aa0989fd19dbd3cf1c2e044c"
+    },
+    {
+      "id": "cfe9d820-1d1a-4f7b-b961-4a34cba535d6",
+      "fileName": "statistiques.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1794839846142,
+      "source": "ai",
+      "prompt": "Ajoute un export CSV des statistiques par agent sur statistiques.html",
+      "size": 19830,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-cfe9d820-1d1a-4f7b-b961-4a34cba535d6.html",
+      "promptSource": "message",
+      "contentDigest": "250c91f2f5ad71a27d019015e03efdf87a36f913085e716eeb1440a0d50706c2"
+    },
+    {
+      "id": "08c551f8-842a-47a1-b159-1b3b1649c051",
+      "fileName": "statistiques.html",
+      "version": 3,
+      "label": "Version 3",
+      "createdAt": 1794840197044,
+      "source": "ai",
+      "prompt": "Ajoute une période personnalisée aux statistiques",
+      "size": 24181,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0003-08c551f8-842a-47a1-b159-1b3b1649c051.html",
+      "contentDigest": "01a75cac9080104151ecce19f7a7aee00caf9dddc7abf693fad022f26df8d8d7",
+      "promptSource": "message"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Statistiques · Scolarité</title>
+<link rel="stylesheet" href="assets/portail.css">
+<style>
+  .a-head select.input { width: auto; min-width: 230px; min-height: 44px; }
+  .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5); }
+  .tile { padding: var(--space-5) var(--space-6); background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .tile .lbl { font-size: var(--text-sm); color: var(--muted); }
+  .tile .val { font-family: var(--font-display); font-size: clamp(34px, 3.4vw, 46px); line-height: 1.1; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .tile .val small { font-size: .45em; color: var(--muted); margin-left: 4px; font-family: var(--font-body); }
+  .tile .sub { font-size: 13px; color: var(--meta); }
+  .panel { margin-bottom: var(--space-5); }
+  .panel h2, .chart-card h2 { font-size: 21px; }
+  .panel-head { margin-bottom: var(--space-5); }
+  .d-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--space-5); margin-bottom: var(--space-5); }
+  .legend { display: flex; gap: var(--space-4); font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  /* Répartition par statut : barre empilée pleine largeur */
+  .stack-bar { display: flex; gap: 2px; height: 28px; border-radius: 6px; overflow: hidden; background: var(--bg); }
+  .stack-bar span { height: 100%; min-width: 3px; transition: width var(--motion-base) var(--ease-standard); }
+  .stack-legend { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-4); }
+  .stack-legend div { font-size: var(--text-sm); color: var(--muted); min-width: 0; }
+  .stack-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
+  .stack-legend b { display: block; font-size: 20px; font-family: var(--font-display); font-weight: 500; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .stack-legend b small { font-family: var(--font-body); font-size: 12px; color: var(--meta); margin-left: 6px; }
+  .c-soumise { background: var(--ring-warm); } .c-en_cours { background: var(--warn); } .c-info_requise { background: var(--accent); } .c-prete { background: var(--success); } .c-refusee { background: var(--danger); }
+
+  /* Colonnes simples */
+  .cols { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; align-items: end; height: 200px; padding-top: 20px; border-bottom: 1px solid var(--border-soft); }
+  .col { position: relative; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
+  .col span { display: block; background: var(--fg-2); border-radius: 4px 4px 0 0; min-height: 2px; transition: height var(--motion-base) var(--ease-standard); }
+  .col.off span { background: var(--ring-warm); }
+  .col b { position: absolute; left: 0; right: 0; text-align: center; font-size: 12px; font-weight: 500; color: var(--fg-2); font-variant-numeric: tabular-nums; }
+  .col-labels { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 6px; font-size: 11px; color: var(--meta); text-align: center; }
+
+  /* Colonnes groupées : reçues / clôturées */
+  .gcols { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 10px; align-items: end; height: 200px; padding-top: 20px; border-bottom: 1px solid var(--border-soft); }
+  .gcol { display: flex; gap: 3px; align-items: flex-end; height: 100%; min-width: 0; }
+  .gbar { flex: 1; position: relative; min-height: 2px; border-radius: 4px 4px 0 0; transition: height var(--motion-base) var(--ease-standard); }
+  .gbar.in { background: var(--fg-2); } .gbar.out { background: var(--meta); }
+  .gbar b { position: absolute; left: -4px; right: -4px; bottom: calc(100% + 3px); text-align: center; font-size: 10px; font-weight: 500; color: var(--fg-2); font-variant-numeric: tabular-nums; }
+  .gcols + .col-labels { gap: 10px; }
+
+  .sla-bar { display: inline-block; width: 80px; height: 6px; border-radius: 99px; background: var(--surface-warm); position: relative; vertical-align: middle; margin-right: 8px; }
+  .sla-bar i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; }
+  .table tbody tr { cursor: default; }
+  .table td.num, .table th.num { text-align: right; }
+  .empty { padding: var(--space-8) var(--space-4); text-align: center; color: var(--muted); font-size: var(--text-sm); }
+  .note { font-size: 12px; color: var(--meta); margin-top: var(--space-4); }
+  @media (max-width: 1180px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .d-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .stack-legend { grid-template-columns: repeat(2, minmax(0, 1fr)); } .a-head select.input { width: 100%; } }
+  @media (max-width: 600px) { .tiles { grid-template-columns: 1fr; } .col b { font-size: 10px; } .gcols, .gcols + .col-labels { gap: 6px; } }
+</style>
+</head>
+<body>
+<div class="a-shell">
+  <aside id="a-side"></aside>
+  <main class="a-main" data-od-id="statistics">
+    <div class="a-head">
+      <div><p class="eyebrow">Analyse</p><h1 data-od-id="statistics-title">Statistiques de traitement</h1></div>
+      <div class="row wrap">
+        <label class="sr-only" for="svc-filter">Service</label>
+        <select class="input" id="svc-filter" data-od-id="service-filter"></select>
+        <div class="tabs" role="tablist" id="period" aria-label="Période" data-od-id="period-filter"></div>
+      </div>
+    </div>
+
+    <div class="tiles" id="tiles" data-od-id="stat-tiles"></div>
+
+    <section class="card panel" data-od-id="chart-status">
+      <div class="panel-head"><h2>Où en sont les demandes reçues</h2><p class="meta" id="status-sub"></p></div>
+      <div id="status"></div>
+    </section>
+
+    <div class="d-grid">
+      <section class="card chart-card" data-od-id="chart-flow">
+        <div class="row-between wrap panel-head" style="align-items:flex-start"><div><h2>Reçues et clôturées par semaine</h2><p class="meta" id="flow-sub"></p></div>
+          <div class="legend"><span><i style="background:var(--fg-2)"></i>Reçues</span><span><i style="background:var(--meta)"></i>Clôturées</span></div></div>
+        <div class="gcols" id="flow"></div><div class="col-labels" id="flow-l"></div>
+      </section>
+      <section class="card chart-card" data-od-id="chart-delays">
+        <div class="panel-head"><h2>Durée de traitement</h2><p class="meta" id="delay-sub"></p></div>
+        <div id="delays"></div>
+      </section>
+    </div>
+
+    <div class="d-grid">
+      <section class="card card-flush chart-card" data-od-id="table-agents">
+        <div style="padding:var(--space-6) var(--space-6) var(--space-3)"><h2>Activité par agent</h2><p class="meta">Demandes clôturées sur la période · en cours à date</p></div>
+        <div style="overflow-x:auto"><table class="table"><thead><tr><th>Agent</th><th class="num">Clôturées</th><th class="num">Délai moyen</th><th>Dans le délai</th><th class="num">En cours</th></tr></thead><tbody id="agents"></tbody></table></div>
+      </section>
+      <section class="card chart-card" data-od-id="chart-weekdays">
+        <div class="panel-head"><h2>Jour de dépôt</h2><p class="meta" id="wd-sub"></p></div>
+        <div id="weekdays"></div>
+      </section>
+    </div>
+    <p class="note">Données de démonstration générées pour le prototype · délais calculés en jours ouvrés (hors week-ends) · objectif de respect du délai indicatif : 90 %.</p>
+  </main>
+</div>
+<script src="assets/portail.js"></script>
+<script>
+(function () {
+  const $ = s => document.querySelector(s);
+  const PERIODS = [['30', '30 jours', 30], ['90', '90 jours', 90], ['all', 'Tout', 3650]];
+  const TARGET = 0.9;
+  const narrow = window.matchMedia('(max-width: 600px)');
+  let period = localStorage.getItem('portail-stats-period') || '90';
+  let service = localStorage.getItem('portail-stats-service') || 'all';
+  if (!PERIODS.some(p => p[0] === period)) period = '90';
+  if (service !== 'all' && !P.SERVICES[service]) service = 'all';
+
+  const fmt1 = n => n.toLocaleString('fr-FR', { maximumFractionDigits: 1, minimumFractionDigits: 1 });
+  const pct = n => Math.round(n * 100) + ' %';
+  const plural = (n, one, many) => n + ' ' + (n > 1 ? many : one);
+  const dayMonth = ts => new Date(ts).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+  const delayOf = r => P.businessDaysBetween(r.createdAt, r.closedAt);
+  const empty = t => '<div class="empty">' + t + '</div>';
+
+  $('#svc-filter').innerHTML = '<option value="all">Tous les services</option>' + Object.entries(P.SERVICES).map(([k, v]) => '<option value="' + k + '">' + v + '</option>').join('');
+
+  function render() {
+    P.mountAgent('stats');
+    $('#svc-filter').value = service;
+    $('#period').innerHTML = PERIODS.map(([k, l]) => '<button class="tab" role="tab" data-p="' + k + '" aria-selected="' + (k === period) + '">' + l + '</button>').join('');
+    const days = PERIODS.find(p => p[0] === period)[2], from = Date.now() - days * P.DAY;
+    const base = P.state.requests.filter(r => service === 'all' || r.service === service);
+    const recv = base.filter(r => r.createdAt >= from);
+    const closed = base.filter(r => r.closedAt && r.closedAt >= from);
+    const scope = (period === 'all' ? 'depuis le début du jeu de données' : 'sur ' + days + ' jours') + (service === 'all' ? '' : ' · ' + P.SERVICES[service]);
+
+    // Indicateurs
+    const delays = closed.map(delayOf).sort((a, b) => a - b), n = delays.length;
+    const median = n ? (n % 2 ? delays[(n - 1) / 2] : (delays[n / 2 - 1] + delays[n / 2]) / 2) : null;
+    const mean = n ? delays.reduce((s, d) => s + d, 0) / n : null;
+    const takes = recv.map(r => { const h = r.history.find(x => x.status === 'en_cours'); return h ? P.businessDaysBetween(r.createdAt, h.at) : null; }).filter(x => x !== null);
+    const take = takes.length ? takes.reduce((s, d) => s + d, 0) / takes.length : null;
+    const refused = closed.filter(r => r.status === 'refusee').length;
+    const asked = recv.filter(r => r.history.some(h => h.status === 'info_requise')).length;
+    const val = (v, unit) => v === null ? '—' : fmt1(v) + '<small>' + unit + '</small>';
+    $('#tiles').innerHTML =
+      '<div class="tile" data-od-id="stat-median-delay"><span class="lbl">Délai médian de traitement</span><span class="val">' + val(median, 'j ouvrés') + '</span><span class="sub">' + (n ? 'Moyenne ' + fmt1(mean) + ' j · ' + plural(n, 'demande clôturée', 'demandes clôturées') : 'Aucune demande clôturée') + '</span></div>' +
+      '<div class="tile" data-od-id="stat-take-delay"><span class="lbl">Délai de prise en charge</span><span class="val">' + val(take, 'j ouvrés') + '</span><span class="sub">' + (takes.length ? 'Du dépôt à la prise en charge · ' + plural(takes.length, 'demande', 'demandes') : 'Aucune demande prise en charge') + '</span></div>' +
+      '<div class="tile" data-od-id="stat-refusal-rate"><span class="lbl">Taux de refus</span><span class="val">' + (n ? pct(refused / n) : '—') + '</span><span class="sub">' + (n ? plural(refused, 'refus', 'refus') + ' sur ' + plural(n, 'clôture', 'clôtures') : 'Aucune demande clôturée') + '</span></div>' +
+      '<div class="tile" data-od-id="stat-info-rate"><span class="lbl">Demandes avec complément</span><span class="val">' + (recv.length ? pct(asked / recv.length) : '—') + '</span><span class="sub">' + (recv.length ? asked + ' sur ' + plural(recv.length, 'demande reçue', 'demandes reçues') : 'Aucune demande reçue') + '</span></div>';
+
+    // Répartition par statut
+    $('#status-sub').textContent = plural(recv.length, 'demande reçue', 'demandes reçues') + ' ' + scope;
+    if (!recv.length) $('#status').innerHTML = empty('Aucune demande reçue sur cette période pour ce service.');
+    else {
+      const parts = Object.keys(P.STATUS).map(k => [k, recv.filter(r => r.status === k).length]);
+      $('#status').innerHTML = '<div class="stack-bar" role="img" aria-label="' + parts.map(([k, c]) => P.STATUS[k].label + ' : ' + c).join(', ') + '">' +
+        parts.filter(p => p[1]).map(([k, c]) => '<span class="c-' + k + '" style="width:' + (c / recv.length * 100) + '%" title="' + P.STATUS[k].label + ' : ' + c + '"></span>').join('') + '</div>' +
+        '<div class="stack-legend">' + parts.map(([k, c]) => '<div data-od-id="status-' + k + '"><b>' + c + '<small>' + pct(c / recv.length) + '</small></b><i class="c-' + k + '"></i>' + P.STATUS[k].short + '</div>').join('') + '</div>';
+    }
+
+    // Flux hebdomadaire (lundi → dimanche), indépendant de la période
+    const count = narrow.matches ? 6 : 12;
+    const monday = new Date(); monday.setHours(0, 0, 0, 0); monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+    const weeks = [];
+    for (let i = count - 1; i >= 0; i--) { const s = monday.getTime() - i * 7 * P.DAY, e = s + 7 * P.DAY; weeks.push({ s, a: base.filter(r => r.createdAt >= s && r.createdAt < e).length, b: base.filter(r => r.closedAt && r.closedAt >= s && r.closedAt < e).length }); }
+    const wmax = Math.max(1, ...weeks.map(w => Math.max(w.a, w.b)));
+    const bar = (cls, v) => '<div class="gbar ' + cls + '" style="height:' + (v / wmax * 100) + '%">' + (v ? '<b>' + v + '</b>' : '') + '</div>';
+    $('#flow-sub').textContent = count + ' dernières semaines' + (service === 'all' ? '' : ' · ' + P.SERVICES[service]);
+    $('#flow').innerHTML = weeks.map(w => '<div class="gcol" title="Semaine du ' + P.fmtShort(w.s) + ' : ' + w.a + ' reçues, ' + w.b + ' clôturées">' + bar('in', w.a) + bar('out', w.b) + '</div>').join('');
+    $('#flow-l').innerHTML = weeks.map(w => '<span>' + dayMonth(w.s) + '</span>').join('');
+
+    // Distribution des durées
+    const BUCKETS = [['≤ 1 j', d => d <= 1], ['1–2 j', d => d > 1 && d <= 2], ['2–3 j', d => d > 2 && d <= 3], ['3–5 j', d => d > 3 && d <= 5], ['5–7 j', d => d > 5 && d <= 7], ['> 7 j', d => d > 7]];
+    $('#delay-sub').textContent = n ? plural(n, 'demande clôturée', 'demandes clôturées') + ' · en jours ouvrés' : 'En jours ouvrés';
+    if (!n) $('#delays').innerHTML = empty('Aucune demande clôturée sur cette période.');
+    else {
+      const b = BUCKETS.map(([l, fn]) => [l, delays.filter(fn).length]), bmax = Math.max(1, ...b.map(x => x[1]));
+      $('#delays').innerHTML = '<div class="cols">' + b.map(([l, c]) => '<div class="col" title="' + P.esc(l) + ' : ' + plural(c, 'demande', 'demandes') + '"><b style="bottom:calc(' + (c / bmax * 100) + '% + 4px)">' + c + '</b><span style="height:' + (c / bmax * 100) + '%"></span></div>').join('') + '</div>' +
+        '<div class="col-labels">' + b.map(([l]) => '<span>' + l + '</span>').join('') + '</div>';
+    }
+
+    // Par agent
+    const rows = P.AGENTS.map(name => {
+      const done = closed.filter(r => r.agent === name);
+      const live = base.filter(r => P.OPEN.includes(r.status) && r.agent === name);
+      return { name, done, live, late: live.filter(P.isLate).length };
+    }).sort((a, b) => b.done.length - a.done.length);
+    $('#agents').innerHTML = rows.map(a => {
+      const live = '<td class="num">' + a.live.length + (a.late ? ' <span class="late">· ' + a.late + ' en retard</span>' : '') + '</td>';
+      if (!a.done.length) return '<tr><td>' + P.esc(a.name) + '</td><td class="num">0</td><td class="meta" colspan="2">Aucune clôture sur la période</td>' + live + '</tr>';
+      const avg = a.done.reduce((s, r) => s + delayOf(r), 0) / a.done.length;
+      const ok = a.done.filter(r => r.closedAt <= P.dueOf(r)).length / a.done.length;
+      const c = ok >= TARGET ? 'var(--success)' : ok >= .75 ? 'var(--warn)' : 'var(--danger)';
+      return '<tr><td>' + P.esc(a.name) + '</td><td class="num">' + a.done.length + '</td><td class="num">' + fmt1(avg) + ' j</td><td class="num" style="text-align:left"><span class="sla-bar"><i style="width:' + ok * 100 + '%;background:' + c + '"></i></span>' + pct(ok) + '</td>' + live + '</tr>';
+    }).join('');
+
+    // Jour de dépôt
+    const DAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+    const wd = DAYS.map((l, i) => recv.filter(r => (new Date(r.createdAt).getDay() + 6) % 7 === i).length), dmax = Math.max(1, ...wd);
+    $('#wd-sub').textContent = recv.length ? 'Demandes reçues ' + scope : 'Demandes reçues';
+    $('#weekdays').innerHTML = !recv.length ? empty('Aucune demande reçue sur cette période.') :
+      '<div class="cols">' + wd.map((c, i) => '<div class="col' + (i > 4 ? ' off' : '') + '" title="' + DAYS[i] + ' : ' + plural(c, 'demande', 'demandes') + '"><b style="bottom:calc(' + (c / dmax * 100) + '% + 4px)">' + c + '</b><span style="height:' + (c / dmax * 100) + '%"></span></div>').join('') + '</div>' +
+      '<div class="col-labels">' + DAYS.map(l => '<span>' + l + '</span>').join('') + '</div>' +
+      '<p class="note">Week-end en clair : dépôts hors jours ouvrés, traités à partir du lundi.</p>';
+  }
+
+  document.addEventListener('click', e => { const p = e.target.closest('[data-p]'); if (p) { period = p.dataset.p; localStorage.setItem('portail-stats-period', period); render(); } });
+  $('#svc-filter').addEventListener('change', e => { service = e.target.value; localStorage.setItem('portail-stats-service', service); render(); });
+  narrow.addEventListener('change', render);
+  P.onExternalChange(render);
+  render();
+})();
+</script>
+</body>
+</html>

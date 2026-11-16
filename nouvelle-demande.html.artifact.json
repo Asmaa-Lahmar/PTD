@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "nouvelle-demande.html",
+  "entry": "nouvelle-demande.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-10-15T11:39:04.098Z",
+  "updatedAt": "2026-10-15T11:39:04.098Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "fileName": "sauvegarde-uniflow/espace-etudiant.html",
+  "currentVersionId": "43721196-4fb8-45c6-b180-b2c8e552c7af",
+  "entries": [
+    {
+      "id": "43721196-4fb8-45c6-b180-b2c8e552c7af",
+      "fileName": "sauvegarde-uniflow/espace-etudiant.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1794839244622,
+      "source": "ai",
+      "prompt": "tout, je veux le systeme designe precedent, et pas le actuelle qui apparaitre sur ce page",
+      "size": 72362,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-43721196-4fb8-45c6-b180-b2c8e552c7af.html",
+      "contentDigest": "d2b087f19430a90dacde7dd3ef1bb27a229112b05630dd25c536504421266e3d",
+      "promptSource": "message"
+    }
+  ]
+}

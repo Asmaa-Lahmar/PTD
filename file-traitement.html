@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File de traitement · Scolarité</title>
+<link rel="stylesheet" href="assets/portail.css">
+<style>
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); margin-bottom: var(--space-6); }
+  .kpi { padding: var(--space-4) var(--space-5); background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-md); text-align: left; cursor: pointer; transition: box-shadow var(--motion-fast) var(--ease-standard); }
+  .kpi:hover { box-shadow: 0 0 0 1px var(--ring-warm); }
+  .kpi span { display: block; font-size: 13px; color: var(--muted); }
+  .kpi b { font-family: var(--font-display); font-weight: 500; font-size: var(--text-2xl); line-height: 1.2; }
+  .kpi.danger b { color: var(--danger); }
+  .toolbar { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; margin-bottom: var(--space-4); }
+  .toolbar .input { width: auto; min-width: 0; }
+  .toolbar .search { flex: 1 1 240px; }
+  .q-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+  .q-grid.has-panel { grid-template-columns: minmax(0, 1fr) 420px; }
+  .table-wrap { overflow-x: auto; }
+  .table td .sub { display: block; font-size: 12px; color: var(--meta); }
+  .table td.who b { font-weight: 500; }
+  .panel { position: sticky; top: var(--space-6); max-height: calc(100vh - 48px); overflow-y: auto; }
+  .panel h2 { font-size: var(--text-xl); margin: 6px 0 2px; }
+  .p-meta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); margin: var(--space-5) 0; padding: var(--space-4); border-radius: var(--radius-md); background: var(--bg); font-size: var(--text-sm); }
+  .p-meta span { display: block; font-size: 12px; color: var(--meta); }
+  .p-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .p-sec { margin-top: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--border-soft); }
+  .p-sec h3 { font-size: 17px; margin-bottom: var(--space-3); }
+  .kv { display: grid; grid-template-columns: 150px 1fr; font-size: var(--text-sm); margin: 0; }
+  .kv dt, .kv dd { margin: 0; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .kv dt { color: var(--muted); }
+  .waiting { padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); background: var(--accent-tint); font-size: var(--text-sm); margin-bottom: var(--space-3); }
+  .close-panel { margin-left: auto; }
+  .templates { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-3); }
+  .templates button { border: 0; background: var(--surface-warm); color: var(--fg-2); border-radius: 6px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
+  .templates button:hover { background: color-mix(in oklab, var(--surface-warm), var(--fg) 8%); }
+  .empty { padding: var(--space-8); text-align: center; color: var(--muted); }
+  .scrim { display: none; }
+  @media (max-width: 1280px) {
+    .q-grid.has-panel { grid-template-columns: minmax(0, 1fr); }
+    .panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100vw); max-height: none; border-radius: 0; z-index: 60; box-shadow: -12px 0 40px rgba(0,0,0,.14); animation: slideIn var(--motion-base) var(--ease-standard); }
+    .q-grid.has-panel .scrim { display: block; position: fixed; inset: 0; background: rgba(20,20,19,.25); z-index: 55; }
+    .col-agent { display: none; }
+  }
+  @keyframes slideIn { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @media (max-width: 760px) { .kpis { grid-template-columns: 1fr 1fr; } .col-service, .col-date { display: none; } .p-meta { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="a-shell">
+  <aside id="a-side"></aside>
+  <main class="a-main" data-od-id="agent-queue">
+    <div class="a-head">
+      <div><p class="eyebrow">Back-office scolarité</p><h1 data-od-id="queue-title">File de traitement</h1></div>
+      <p class="meta" id="sync">Synchronisé avec le portail étudiant</p>
+    </div>
+    <div class="kpis" id="kpis" data-od-id="queue-kpis"></div>
+    <div class="toolbar" data-od-id="queue-filters">
+      <input class="input search" type="search" id="q" placeholder="Rechercher un nom, un n° étudiant, une référence" aria-label="Rechercher" style="min-height:44px;padding:10px 12px;border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--surface)">
+      <select class="input" id="svc" aria-label="Service" style="min-height:44px;padding:0 12px;border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--surface)"></select>
+      <select class="input" id="typ" aria-label="Type de document" style="min-height:44px;padding:0 12px;border:1px solid var(--border-soft);border-radius:var(--radius-md);background:var(--surface)"></select>
+    </div>
+    <div class="tabs" role="tablist" id="tabs" style="margin-bottom:var(--space-4);width:max-content;max-width:100%"></div>
+    <div class="q-grid" id="grid">
+      <div class="card card-flush table-wrap">
+        <table class="table" data-od-id="queue-table">
+          <thead><tr><th>Référence</th><th>Étudiant·e</th><th>Document</th><th class="col-service">Service</th><th class="col-date">Déposée</th><th>Échéance</th><th>Statut</th><th class="col-agent">Agent</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="scrim" id="scrim"></div>
+      <aside class="card panel hidden" id="panel" data-od-id="request-panel" aria-live="polite"></aside>
+    </div>
+  </main>
+</div>
+
+<dialog class="dlg" id="dlg"><form method="dialog" id="dlg-form"><div class="dlg-head"><h2 id="dlg-title"></h2><p class="body-sm body-muted" id="dlg-sub" style="margin-top:4px"></p></div><div class="dlg-body stack-4" id="dlg-body"></div><div class="dlg-foot"><button class="btn btn-ghost" value="cancel" formnovalidate>Annuler</button><button class="btn btn-primary" value="ok" id="dlg-ok"></button></div></form></dialog>
+
+<script src="assets/portail.js"></script>
+<script>
+(function () {
+  const $ = s => document.querySelector(s);
+  const TABS = [['active', 'Actives', r => P.OPEN.includes(r.status)], ['soumise', 'À prendre en charge', r => r.status === 'soumise'], ['en_cours', 'En cours', r => r.status === 'en_cours'], ['info_requise', 'Complément demandé', r => r.status === 'info_requise'], ['late', 'En retard', r => P.OPEN.includes(r.status) && P.isLate(r)], ['closed', 'Clôturées', r => P.CLOSED.includes(r.status)]];
+  let tab = 'active', selected = null;
+  $('#svc').innerHTML = '<option value="">Tous les services</option>' + Object.entries(P.SERVICES).map(([k, v]) => '<option value="' + k + '">' + v + '</option>').join('');
+  $('#typ').innerHTML = '<option value="">Tous les documents</option>' + P.TYPES.map(t => '<option value="' + t.id + '">' + t.label + '</option>').join('');
+
+  function base() {
+    const q = $('#q').value.trim().toLowerCase(), svc = $('#svc').value, typ = $('#typ').value;
+    return P.state.requests.filter(r => (!svc || r.service === svc) && (!typ || r.type === typ) && (!q || (r.id + ' ' + r.student.name + ' ' + r.student.id).toLowerCase().includes(q)));
+  }
+
+  function render() {
+    P.mountAgent('file');
+    const all = base();
+    const open = all.filter(r => P.OPEN.includes(r.status));
+    const k = [['soumise', 'À prendre en charge', open.filter(r => r.status === 'soumise').length], ['en_cours', 'En cours', open.filter(r => r.status === 'en_cours').length], ['info_requise', 'En attente étudiant·e', open.filter(r => r.status === 'info_requise').length], ['late', 'En retard sur le délai cible', open.filter(P.isLate).length]];
+    $('#kpis').innerHTML = k.map(([id, l, n]) => '<button class="kpi' + (id === 'late' && n ? ' danger' : '') + '" data-tab="' + id + '" data-od-id="kpi-' + id + '"><span>' + l + '</span><b class="num">' + n + '</b></button>').join('');
+    $('#tabs').innerHTML = TABS.map(([id, l, fn]) => '<button class="tab" role="tab" data-tab="' + id + '" aria-selected="' + (id === tab) + '">' + l + ' <span class="count">' + all.filter(fn).length + '</span></button>').join('');
+    let rows = all.filter(TABS.find(t => t[0] === tab)[2]);
+    rows.sort(tab === 'closed' ? (a, b) => b.closedAt - a.closedAt : (a, b) => P.dueOf(a) - P.dueOf(b));
+    $('#rows').innerHTML = rows.length ? rows.map(r => '<tr data-id="' + r.id + '" aria-selected="' + (r.id === selected) + '" tabindex="0" data-od-id="row-' + r.id + '">' +
+      '<td class="mono">' + r.id + '</td><td class="who"><b>' + P.esc(r.student.name) + '</b><span class="sub">' + P.esc(r.student.programme) + '</span></td>' +
+      '<td>' + P.typeById(r.type).label + '</td><td class="col-service">' + P.SERVICES[r.service] + '</td>' +
+      '<td class="col-date num">' + P.fmtShort(r.createdAt) + '</td><td class="num">' + P.dueLabel(r) + '</td><td>' + P.badge(r.status) + '</td><td class="col-agent">' + (r.agent ? P.esc(r.agent) : '<span class="meta">—</span>') + '</td></tr>').join('')
+      : '<tr><td colspan="8" class="empty">Aucune demande ne correspond à ces filtres.</td></tr>';
+    renderPanel();
+  }
+
+  function renderPanel() {
+    const r = selected && P.get(selected);
+    $('#panel').classList.toggle('hidden', !r); $('#grid').classList.toggle('has-panel', !!r);
+    if (!r) return;
+    const t = P.typeById(r.type);
+    let actions = '';
+    if (r.status === 'soumise') actions = '<button class="btn btn-primary" data-act="take" data-od-id="btn-take">Prendre en charge</button><button class="btn btn-secondary" data-act="ask">Demander un complément</button><button class="btn btn-danger" data-act="refuse">Refuser</button>';
+    else if (r.status === 'en_cours') actions = '<button class="btn btn-primary" data-act="ready" data-od-id="btn-ready">Marquer comme prête</button><button class="btn btn-secondary" data-act="ask">Demander un complément</button><button class="btn btn-danger" data-act="refuse">Refuser</button>';
+    else if (r.status === 'info_requise') { const ask = r.history.filter(h => h.status === 'info_requise').slice(-1)[0]; actions = '<div class="waiting" style="width:100%">En attente de la réponse de l’étudiant·e ' + P.fmtRel(ask.at) + '. Le délai cible continue de courir.</div><button class="btn btn-secondary" data-act="remind">Relancer</button><button class="btn btn-ghost" data-act="resume">Reprendre sans réponse</button>'; }
+    else actions = '<span class="meta">Demande clôturée le ' + P.fmtDate(r.closedAt) + '.</span>';
+    if (P.OPEN.includes(r.status)) actions += '<button class="btn btn-ghost" data-act="transfer">Transférer</button>';
+    $('#panel').innerHTML = '<div class="row"><span class="mono meta">' + r.id + '</span>' + P.badge(r.status) + '<button class="btn btn-ghost btn-sm close-panel" data-act="close" aria-label="Fermer le panneau">Fermer</button></div>' +
+      '<h2>' + t.label + '</h2><p class="body-sm body-muted">' + P.esc(r.student.name) + ' · <span class="num">' + r.student.id + '</span> · ' + P.esc(r.student.programme) + '</p>' +
+      '<div class="p-meta"><div><span>Service</span>' + P.SERVICES[r.service] + '</div><div><span>Échéance (' + P.slaOf(r) + ' j ouvrés)</span>' + P.fmtDate(P.dueOf(r)) + ' · ' + P.dueLabel(r) + '</div><div><span>Déposée</span>' + P.fmtTime(r.createdAt) + '</div><div><span>Agent</span>' + (r.agent ? P.esc(r.agent) : 'Non attribuée') + '</div></div>' +
+      '<div class="p-actions" data-od-id="panel-actions">' + actions + '</div>' +
+      '<section class="p-sec"><h3>Informations saisies</h3><dl class="kv">' + P.dataRows(r).map(([k, v]) => '<dt>' + k + '</dt><dd>' + P.esc(v) + '</dd>').join('') + (r.data.commentaire ? '<dt>Commentaire</dt><dd>' + P.esc(r.data.commentaire) + '</dd>' : '') + '</dl></section>' +
+      (r.files && r.files.length ? '<section class="p-sec" data-od-id="panel-files"><h3>Pièces jointes</h3>' + P.attachmentsHTML(r) + '</section>' : '') +
+      '<section class="p-sec"><h3>Historique</h3>' + P.timeline(r, true) + '</section>';
+  }
+
+  // Dialogue d'action
+  function ask(opts) {
+    $('#dlg-title').textContent = opts.title; $('#dlg-sub').textContent = opts.sub || '';
+    $('#dlg-body').innerHTML = opts.body; $('#dlg-ok').textContent = opts.ok;
+    $('#dlg-ok').className = 'btn ' + (opts.danger ? 'btn-danger' : 'btn-primary');
+    const d = $('#dlg'); d.returnValue = ''; d.showModal();
+    d.querySelectorAll('.templates button').forEach(b => b.onclick = e => { e.preventDefault(); const ta = d.querySelector('textarea'); ta.value = b.textContent; ta.focus(); });
+    $('#dlg-form').onsubmit = e => {
+      if (e.submitter && e.submitter.value === 'cancel') return;
+      const err = opts.validate ? opts.validate(d) : '';
+      if (err) { e.preventDefault(); const el = d.querySelector('.field-error'); el.textContent = err; el.classList.remove('hidden'); return; }
+      opts.onOk(d);
+    };
+  }
+  const notifyMsg = r => r.student.name + ' est notifié·e' + (r.student.id === P.ME.id ? ' (visible dans l’espace étudiant)' : '') + '.';
+
+  function act(a) {
+    const r = P.get(selected); if (!r) return;
+    const t = P.typeById(r.type);
+    if (a === 'close') { selected = null; render(); return; }
+    if (a === 'take') { P.transition(r.id, 'en_cours', '', P.AGENT.name); P.toast('<b>Prise en charge.</b> ' + notifyMsg(r)); render(); return; }
+    if (a === 'remind') { P.toast(P.remind(r.id) ? 'Relance enregistrée dans le portail. Aucun e-mail réel n’est envoyé dans ce prototype.' : 'Une relance a déjà été enregistrée aujourd’hui.'); render(); return; }
+    if (a === 'resume') { P.transition(r.id, 'en_cours', 'Traitement repris sans complément.', P.AGENT.name); P.toast('Traitement repris. ' + notifyMsg(r)); render(); return; }
+    if (a === 'ask') ask({ title: 'Demander un complément', sub: t.label + ' · ' + r.student.name, ok: 'Envoyer la demande',
+      body: '<div class="templates"><button>Merci de joindre la pièce justificative manquante.</button><button>Pouvez-vous préciser le semestre et la session concernés ?</button><button>Le document joint est illisible, merci de le renvoyer.</button></div><div class="field"><label for="msg">Message à l’étudiant·e</label><textarea id="msg" rows="4" placeholder="Précisez ce qui manque"></textarea><span class="field-error hidden"></span></div><p class="field-help">Le statut passe à « Complément demandé » et l’étudiant·e est notifié·e.</p>',
+      validate: d => d.querySelector('#msg').value.trim() ? '' : 'Le message est obligatoire.',
+      onOk: d => { P.transition(r.id, 'info_requise', d.querySelector('#msg').value.trim(), P.AGENT.name); P.toast('<b>Complément demandé.</b> ' + notifyMsg(r)); render(); } });
+    if (a === 'ready') ask({ title: 'Marquer comme prête', sub: t.label + ' · ' + r.student.name, ok: 'Confirmer',
+      body: '<div class="field"><label for="msg">Message joint à la notification <span class="meta">(facultatif)</span></label><textarea id="msg" rows="3">' + (r.data.format === 'Papier' ? 'Votre document est à retirer au guichet.' : 'Votre document signé est disponible en téléchargement.') + '</textarea><span class="field-error hidden"></span></div>',
+      onOk: d => { P.transition(r.id, 'prete', d.querySelector('#msg').value.trim(), P.AGENT.name); P.toast('<b>Demande prête.</b> ' + notifyMsg(r)); render(); } });
+    if (a === 'refuse') ask({ title: 'Refuser la demande', sub: t.label + ' · ' + r.student.name, ok: 'Refuser', danger: true,
+      body: '<div class="field"><label for="why">Motif</label><select id="why"><option>Pièce justificative manquante</option><option>Résultats non encore délibérés</option><option>Demande en double</option><option>Hors du périmètre du service</option><option>Autre</option></select></div><div class="field"><label for="msg">Explication à l’étudiant·e</label><textarea id="msg" rows="3" placeholder="Expliquez la marche à suivre"></textarea><span class="field-error hidden"></span></div>',
+      validate: d => d.querySelector('#msg').value.trim() ? '' : 'Une explication est obligatoire pour un refus.',
+      onOk: d => { P.transition(r.id, 'refusee', d.querySelector('#why').value + ' : ' + d.querySelector('#msg').value.trim(), P.AGENT.name); P.toast('<b>Demande refusée.</b> ' + notifyMsg(r)); render(); } });
+    if (a === 'transfer') ask({ title: 'Transférer à un autre service', sub: 'Actuellement : ' + P.SERVICES[r.service], ok: 'Transférer',
+      body: '<div class="field"><label for="to">Nouveau service</label><select id="to">' + Object.entries(P.SERVICES).filter(([k]) => k !== r.service).map(([k, v]) => '<option value="' + k + '">' + v + '</option>').join('') + '</select><span class="field-error hidden"></span></div>',
+      onOk: d => { const to = d.querySelector('#to').value; P.transfer(r.id, to); P.toast('Demande transmise au service : ' + P.SERVICES[to]); render(); } });
+  }
+
+  document.addEventListener('click', e => {
+    const tb = e.target.closest('[data-tab]'); if (tb) { tab = tb.dataset.tab; render(); return; }
+    const row = e.target.closest('tr[data-id]'); if (row) { selected = row.dataset.id; render(); return; }
+    const a = e.target.closest('[data-act]'); if (a) { act(a.dataset.act); return; }
+    if (e.target.id === 'scrim') { selected = null; render(); }
+  });
+  document.addEventListener('keydown', e => {
+    const row = e.target.closest && e.target.closest('tr[data-id]');
+    if (row && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); selected = row.dataset.id; render(); }
+    if (e.key === 'Escape' && selected && !$('#dlg').open) { selected = null; render(); }
+  });
+  ['#q', '#svc', '#typ'].forEach(s => $(s).addEventListener('input', render));
+  P.onExternalChange(() => { render(); $('#sync').textContent = 'Mise à jour reçue ' + new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); });
+  const pre = new URLSearchParams(location.search).get('id'); if (pre && P.get(pre)) selected = pre;
+  render();
+})();
+</script>
+</body>
+</html>

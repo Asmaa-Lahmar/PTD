@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "fileName": "profil.html",
+  "currentVersionId": "79d039ff-e08c-4c80-b4c3-607f090fee27",
+  "entries": [
+    {
+      "id": "79d039ff-e08c-4c80-b4c3-607f090fee27",
+      "fileName": "profil.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1794839646090,
+      "source": "ai",
+      "prompt": "Recrée les pages profil et statistiques dans le style du Portail Scolarité",
+      "size": 10454,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-79d039ff-e08c-4c80-b4c3-607f090fee27.html",
+      "contentDigest": "3f5d4744644ea93f3bc1d25bb4b3a73457f50020f430f72b6b292f8ea30a8ffe",
+      "promptSource": "message"
+    }
+  ]
+}

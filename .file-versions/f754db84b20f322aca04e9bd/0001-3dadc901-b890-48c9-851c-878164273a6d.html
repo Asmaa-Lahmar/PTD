@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mes demandes · Portail Scolarité</title>
+<link rel="stylesheet" href="assets/portail.css">
+<style>
+  .md-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  .alert-card { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5); border-radius: var(--radius-md); background: var(--accent-tint); color: var(--fg); }
+  .alert-card b { font-weight: 600; }
+  .md-grid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
+  .req-list { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-4); }
+  .req-item { display: block; width: 100%; text-align: left; border: 0; cursor: pointer; padding: var(--space-4); background: var(--surface); border-radius: var(--radius-md); box-shadow: 0 0 0 1px var(--border-soft); transition: box-shadow var(--motion-fast) var(--ease-standard); }
+  .req-item:hover { box-shadow: 0 0 0 1px var(--ring-warm), var(--elev-raised); }
+  .req-item[aria-current=true] { box-shadow: 0 0 0 2px var(--fg); }
+  .req-item h3 { font-size: 18px; margin: 6px 0 4px; }
+  .req-item .steps { margin-top: var(--space-3); }
+  .req-item .step { font-size: 0; gap: 0; }
+  .empty { padding: var(--space-8) var(--space-4); text-align: center; color: var(--muted); }
+
+  .detail { position: sticky; top: 88px; }
+  .detail h2 { font-size: var(--text-2xl); line-height: 1.15; }
+  .d-sec { padding-top: var(--space-5); margin-top: var(--space-5); border-top: 1px solid var(--border-soft); }
+  .d-sec > h3 { font-size: 18px; margin-bottom: var(--space-4); }
+  .action { padding: var(--space-5); border-radius: var(--radius-md); background: var(--bg); margin-top: var(--space-5); }
+  .action.ask { background: var(--accent-tint); }
+  .action.ok { background: var(--success-tint); }
+  .action.ko { background: var(--danger-tint); }
+  .action .from { font-size: 13px; color: var(--muted); }
+  .action blockquote { margin: 6px 0 var(--space-4); font-family: var(--font-display); font-size: 18px; line-height: 1.45; }
+  .eta { display: flex; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-4); font-size: var(--text-sm); }
+  .eta span { display: block; color: var(--meta); font-size: 12px; }
+  .eta b { font-weight: 500; }
+  .kv { display: grid; grid-template-columns: 200px 1fr; font-size: 15px; margin: 0; }
+  .kv dt, .kv dd { margin: 0; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .kv dt { color: var(--muted); }
+  .back { display: none; }
+
+  @media (max-width: 860px) {
+    .md-grid { grid-template-columns: 1fr; }
+    .detail { position: static; }
+    .md-grid.show-detail .list-col { display: none; }
+    .md-grid:not(.show-detail) .detail { display: none; }
+    .back { display: inline-flex; margin: 0 0 var(--space-3) -8px; }
+    .kv { grid-template-columns: 1fr; }
+    .kv dt { border: 0; padding-bottom: 0; font-size: 13px; }
+    .detail.card { padding: var(--space-5); }
+  }
+</style>
+</head>
+<body>
+<header id="s-top"></header>
+<main class="s-main" data-od-id="my-requests">
+  <div class="md-head">
+    <div><p class="eyebrow">Suivi</p><h1 data-od-id="my-requests-title">Mes demandes</h1></div>
+    <a class="btn btn-primary" href="nouvelle-demande.html" data-od-id="btn-new-request">${plus} Nouvelle demande</a>
+  </div>
+  <div id="alert"></div>
+  <div class="md-grid" id="grid">
+    <div class="list-col">
+      <div class="tabs" role="tablist" aria-label="Filtrer" id="tabs" data-od-id="request-filters"></div>
+      <div class="req-list" id="list" data-od-id="request-list"></div>
+    </div>
+    <article class="detail card" id="detail" data-od-id="request-detail" aria-live="polite"></article>
+  </div>
+</main>
+
+<script src="assets/portail.js"></script>
+<script>
+(function () {
+  P.mountStudent('suivi');
+  const $ = s => document.querySelector(s);
+  const btn = document.querySelector('[data-od-id=btn-new-request]'); btn.innerHTML = btn.innerHTML.replace('${plus}', P.ICON.plus);
+  const FILTERS = [['all', 'Toutes', () => true], ['open', 'En cours', r => r.status === 'soumise' || r.status === 'en_cours'], ['action', 'Action requise', r => r.status === 'info_requise'], ['closed', 'Terminées', r => P.CLOSED.includes(r.status)]];
+  const params = new URLSearchParams(location.search);
+  let filter = 'all', selected = params.get('id'), mobileDetail = !!selected;
+
+  function render() {
+    const mine = P.mineList();
+    if (!selected || !mine.find(r => r.id === selected)) selected = (mine.find(r => r.status === 'info_requise') || mine[0] || {}).id;
+    const pending = mine.filter(r => r.status === 'info_requise');
+    $('#alert').innerHTML = pending.length ? '<div class="alert-card" data-od-id="action-required-banner"><span><b>' + pending.length + ' demande' + (pending.length > 1 ? 's attendent' : ' attend') + ' votre réponse.</b> Le traitement est suspendu tant que le complément n’est pas fourni.</span><button class="btn btn-dark btn-sm" data-open="' + pending[0].id + '">Répondre</button></div>' : '';
+    $('#tabs').innerHTML = FILTERS.map(([k, l, fn]) => '<button class="tab" role="tab" data-filter="' + k + '" aria-selected="' + (k === filter) + '">' + l + ' <span class="count">' + mine.filter(fn).length + '</span></button>').join('');
+    const list = mine.filter(FILTERS.find(f => f[0] === filter)[2]);
+    $('#list').innerHTML = list.length ? list.map(r => '<button class="req-item" data-open="' + r.id + '" aria-current="' + (r.id === selected) + '" data-od-id="request-' + r.id + '">' +
+      '<div class="row-between"><span class="mono meta">' + r.id + '</span>' + P.badge(r.status) + '</div><h3>' + P.typeById(r.type).label + '</h3>' +
+      '<div class="meta">Déposée ' + P.fmtRel(r.createdAt) + ' · ' + P.SERVICES[r.service] + '</div>' + P.stepsHTML(r) + '</button>').join('')
+      : '<div class="empty card">Aucune demande dans cette catégorie.</div>';
+    renderDetail(P.get(selected));
+    $('#grid').classList.toggle('show-detail', mobileDetail);
+  }
+
+  function renderDetail(r) {
+    if (!r) { $('#detail').innerHTML = '<div class="empty">Vous n’avez encore aucune demande.<br><a href="nouvelle-demande.html">Déposer une première demande</a></div>'; return; }
+    const t = P.typeById(r.type), last = r.history.filter(h => !h.auto).slice(-1)[0];
+    let action = '';
+    if (r.status === 'info_requise') {
+      const ask = r.history.filter(h => h.status === 'info_requise').slice(-1)[0];
+      action = '<form class="action ask" id="answer" data-od-id="complement-form"><div class="from">Message de ' + P.esc(ask.by) + ' · ' + P.fmtRel(ask.at) + '</div><blockquote>« ' + P.esc(ask.note) + ' »</blockquote>' +
+        '<div class="field"><label for="ans">Votre réponse</label><textarea id="ans" rows="3" placeholder="Apportez la précision demandée"></textarea><span class="field-error hidden" id="ans-err">Merci de saisir une réponse.</span></div>' +
+        '<div class="row-between wrap" style="margin-top:var(--space-3)"><input type="file" id="ans-file" class="body-sm" aria-label="Joindre un fichier"><button class="btn btn-primary" data-od-id="btn-send-complement">Envoyer le complément</button></div></form>';
+    } else if (r.status === 'prete') {
+      const paper = r.data.format === 'Papier';
+      action = '<div class="action ok" data-od-id="ready-card"><div class="row-between wrap"><div><b>' + (paper ? 'Votre document vous attend' : 'Votre document est prêt') + '</b><div class="body-sm body-muted">' + (paper ? (r.data.retrait === 'Envoi postal' ? 'Envoyé par courrier le ' + P.fmtDate(r.closedAt) + '.' : 'À retirer au guichet de la ' + P.SERVICES[r.service] + ', du lundi au vendredi, 9 h – 16 h, sur présentation de votre carte.') : 'Document signé électroniquement, mis à disposition le ' + P.fmtDate(r.closedAt) + '.') + '</div></div>' +
+        (paper ? '' : '<button class="btn btn-dark" id="dl" data-od-id="btn-download">' + P.ICON.download + 'Télécharger le PDF</button>') + '</div></div>';
+    } else if (r.status === 'refusee') {
+      action = '<div class="action ko" data-od-id="refusal-card"><div class="from">Motif communiqué par ' + P.esc(last.by) + '</div><blockquote>« ' + P.esc(last.note) + ' »</blockquote><a class="btn btn-secondary btn-sm" href="nouvelle-demande.html?type=' + r.type + '">Refaire une demande</a></div>';
+    }
+    const eta = P.CLOSED.includes(r.status)
+      ? '<div><span>Clôturée le</span><b>' + P.fmtDate(r.closedAt) + '</b></div><div><span>Durée de traitement</span><b>' + Math.max(1, Math.round(P.businessDaysBetween(r.createdAt, r.closedAt))) + ' j ouvrés</b></div>'
+      : '<div><span>Disponibilité estimée</span><b>' + P.fmtDate(P.dueOf(r)) + '</b></div><div><span>Traitée par</span><b>' + (r.agent || 'En attente d’attribution') + '</b></div>';
+    $('#detail').innerHTML = '<button class="btn btn-ghost btn-sm back" id="back">' + P.ICON.back + 'Mes demandes</button>' +
+      '<div class="row-between wrap"><span class="mono meta">' + r.id + '</span>' + P.badge(r.status) + '</div>' +
+      '<h2 style="margin:8px 0 6px">' + t.label + '</h2><p class="body-muted body-sm">Déposée le ' + P.fmtDate(r.createdAt) + ' · ' + P.SERVICES[r.service] + '</p>' +
+      '<div style="margin-top:var(--space-5)">' + P.stepsHTML(r) + '</div><div class="eta">' + eta + '</div>' + action +
+      '<section class="d-sec"><h3>Historique</h3>' + P.timeline(r, true) + '</section>' +
+      '<section class="d-sec"><h3>Détails de la demande</h3><dl class="kv">' + P.dataRows(r).map(([k, v]) => '<dt>' + k + '</dt><dd>' + P.esc(v) + '</dd>').join('') + '</dl></section>';
+  }
+
+  document.addEventListener('click', e => {
+    const o = e.target.closest('[data-open]'); if (o) { selected = o.dataset.open; mobileDetail = true; if (P.get(selected).status === 'info_requise' && filter !== 'all' && filter !== 'action') filter = 'all'; history.replaceState(null, '', '?id=' + selected); render(); return; }
+    const f = e.target.closest('[data-filter]'); if (f) { filter = f.dataset.filter; render(); return; }
+    if (e.target.closest('#back')) { mobileDetail = false; render(); return; }
+    if (e.target.closest('#dl')) P.toast('<b>Téléchargement simulé.</b> Dans Power Apps, le PDF est généré par Power Automate à partir du modèle Word du service.');
+  });
+  document.addEventListener('submit', e => {
+    if (e.target.id !== 'answer') return; e.preventDefault();
+    const txt = $('#ans').value.trim(); if (!txt) { $('#ans-err').classList.remove('hidden'); $('#ans').focus(); return; }
+    const file = $('#ans-file').files[0];
+    P.answerInfo(selected, txt, file && file.name);
+    P.toast('<b>Complément envoyé.</b> Votre demande reprend son traitement.');
+    render();
+  });
+
+  P.onExternalChange(() => { P.mountStudent('suivi'); document.querySelectorAll('.s-tabbar').forEach((n, i, a) => i < a.length - 1 && n.remove()); render(); });
+  render();
+})();
+</script>
+</body>
+</html>

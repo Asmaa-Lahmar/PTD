@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 2,
+  "fileName": "nouvelle-demande.html",
+  "currentVersionId": "bd66eb8f-3046-4e7d-8ed4-8157bca0ef08",
+  "entries": [
+    {
+      "id": "f1f4c0ad-62d8-4093-8c7c-5ad6ea685742",
+      "fileName": "nouvelle-demande.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1792064629810,
+      "source": "ai",
+      "prompt": "Continue from the stopped or incomplete turn. Read the conversation, current project files, and any visible errors, then take the next concrete step. If a primary artifact already exists, update it in place; otherwise create the missing primary artifact and summarize what changed.",
+      "size": 18585,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-f1f4c0ad-62d8-4093-8c7c-5ad6ea685742.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "c65ade8a-bb61-4fef-ba96-a178fc263498",
+      "fileName": "nouvelle-demande.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1792064888347,
+      "source": "ai",
+      "prompt": "cette button ne fonctione pas",
+      "size": 19385,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-c65ade8a-bb61-4fef-ba96-a178fc263498.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "5a3ae6fa-791a-4f09-b7a9-d80e6bcdef0e",
+      "fileName": "nouvelle-demande.html",
+      "version": 3,
+      "label": "Version 3",
+      "createdAt": 1792065044138,
+      "source": "ai",
+      "prompt": "@creative-director\nCible actuelle : Fichier · nouvelle-demande.html.\nSkill sélectionné : creative-director. Utilisez-le comme workflow principal pour ce tour.\nIndex des ressources disponibles : skills(162), plugins(446), MCP(0 activés / 39 modèles), connecteurs(0 connectés), fichiers de design(9).\nSkills recherchables : 8-bit-orbit-video-template, ad-creative, after-hours-editorial-template, agent-browser, ai-music-album, algorithmic-art, apple-hig, article-magazine, artifacts-builder, brainstorming, brand-extract, brand-guidelines, brandkit, industrial-brutalist-ui, canvas-design, card-twitter, card-xiaohongshu, chat-motion-overlay, color-expert, competitive-ads-extractor, copywriting, creative-director, d3-visualization, data-report, deck-guizang-editorial, deck-open-slide-canvas, deck-swiss-international, design-brief, design-consultation, design-md, design-review, digits-fintech-swiss-template, doc, doc-kami-parchment, docx, domain-name-brainstormer, ecommerce-image-workflow, editorial-burgundy-principles-template, emil-design-eng, emilkowalski-motion, enhance-prompt, export-download-debugging, fal-3d, fal-generate, fal-image-edit, fal-kling-o3, fal-lip-sync, fal-realtime, fal-restore, fal-train, fal-tryon, fal-upscale, fal-video-edit, fal-vision, faq-page, field-notes-editorial-template, figma-code-connect-components, figma-create-design-system-rules, figma-create-new-file, figma-generate-design, +102 autres.\nPlugins recherchables : 3D Animated Boy Building Lego, 3D Stone Staircase Evolution Infographic, A Decade of Refinement Glow-Up, Agentic, Airbnb, Airtable, Ancient Guardian Dragon Rescue, Ancient Indian Kingdom FPV Video, Animation transfer and camera tracking prompt, Anime Martial Arts Battle Illustration, Ant, Apple, Application, Arc Browser, Art-Direct an Annual Report like a Magazine Creative Director, Artistic, Atelier Zero, Audio Jingle, Aurora Veil, BMW, BMW M, Beat-Synced Outfit Transformation Dance, Bento, Binance.US, Blog Post, Bold, Bold Poster Frame, Bold Signal Frame, Brief AI in Your Industry like a Tier-1 Consulting AI Vertical Lead, Brief a Health-System Board on Data Governance like a Chief Compliance Officer, Brutalism, Bugatti, Build Minimal Frame, Build a Buyer-Committee Leave-Behind like an Enterprise Sales Lead, Build a Designer Portfolio Narrative like a Hiring Bar-Raiser, Build a New-Hire Onboarding Module like a Top Enablement Lead, Build a Positioning & Messaging System like a Brand Strategist, Build a Studio Portfolio & Rate Deck like a Creative Studio Owner, Build an Editorial Design System like a Magazine Art Director, Cafe, +398 autres.\nMCP disponibles : Modèle Higgsfield (OpenClaw), Modèle Pollinations, Modèle Allyson (animated SVG), Modèle AWS Bedrock Image (Nova Canvas / SD 3.5), Modèle Prompt-to-Asset (icons / favicons / OG / logos), Modèle Nano Banana (AceDataCloud), Modèle Seedream (AceDataCloud), Modèle fal.ai (600+ models), Modèle Imagician (image post-processing), Modèle ImageSorcery (CV-based editing), Modèle Photopea (layered editor), Modèle Topaz Labs (AI upscale / denoise / sharpen), Modèle Transloadit (media pipelines), Modèle Screenshot Website (fast), Modèle ScreenshotOne (managed), Modèle Pagecast (browser → demo GIF / MP4), Modèle Figma Context (read designs → code), Modèle Design Token Bridge, Modèle Design System Extractor (Storybook), Modèle figma-use (write designs from chat), Modèle Aesthetics Wiki (moodboard / inspiration), Modèle 21st.dev Magic (UI components), Modèle shadcn/ui, Modèle FlyonUI (blocks & landing pages), Modèle AntV Chart, Modèle Mermaid diagrams, Modèle MCP Dashboards (45+ chart types), Modèle Excalidraw Architect (hand-drawn diagrams), Modèle EdgeOne Pages (publish HTML), Modèle PageDrop (instant HTML hosting), Modèle PDFSpark (HTML / URL → PDF), Modèle OGForge (Open Graph image generator), Modèle QRMint (styled QR codes), Modèle Slideshot (HTML → PDF / PNG / WebP / PPTX), Modèle Deckrun (Markdown → PDF / video / audio), Modèle Filesystem, Modèle GitHub, Modèle Fetch (HTTP), Modèle A11y (Web accessibility / WCAG).\nFichiers de design de référence : nouvelle-demande.html, drawing-2026-10-15T11-47-26-249Z.png, assets/portail.js, index.html, tableau-de-bord.html, file-traitement.html, notifications.html, mes-demandes.html, assets/portail.css.\nRègle de workflow : définissez d’abord l’objectif esthétique et les contraintes, puis cherchez et associez les ressources ; quand un choix utilisateur est nécessaire, générez un question-form structuré avec réponses personnalisées modifiables et continuez après confirmation.\nAgissez comme orchestrateur Creative Director et terminez un workflow de design :\n1. Définissez d’abord ce que signifie un « bon design » : audience, objectif business, sensation de marque, références de style, densité d’information, standards couleur/typo/motion/assets et motifs IA/template à éviter.\n2. Recherchez et associez tout l’index de ressources ci-dessus. Ne vous limitez pas aux recommandations de la boîte à outils : combinez Skills, MCP, plugins, connecteurs et fichiers de design quand c’est utile.\n3. Si la cible ou le niveau esthétique reste flou, guidez-moi avec un question-form structuré, incluez des valeurs par défaut recommandées et rendez chaque question à choix fermé modifiable avec un champ de réponse personnalisée. Si c’est suffisamment clair, exécutez directement l’étape suivante.\n4. Terminez le flux dans cet ordre : diagnostic -> direction de style -> sélection des ressources -> édition/génération concrète -> vérification. À chaque étape, expliquez pourquoi ces ressources ont été choisies et ce qui doit être confirmé ensuite.",
+      "size": 21559,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0003-5a3ae6fa-791a-4f09-b7a9-d80e6bcdef0e.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "b14c6d72-3d4a-4102-8ab1-88d5b09fd2e4",
+      "fileName": "nouvelle-demande.html",
+      "version": 4,
+      "label": "Version 4",
+      "createdAt": 1792065190640,
+      "source": "ai",
+      "prompt": "cette button ne fonctionne pas, corriger",
+      "size": 21738,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0004-b14c6d72-3d4a-4102-8ab1-88d5b09fd2e4.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "bd66eb8f-3046-4e7d-8ed4-8157bca0ef08",
+      "fileName": "nouvelle-demande.html",
+      "version": 5,
+      "label": "Version 5",
+      "createdAt": 1792408635102,
+      "source": "ai",
+      "prompt": "[form answers — continue-project]\n- Que souhaitez-vous poursuivre ?: Compléter les parcours du portail [value: complete_portal]",
+      "size": 22320,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0005-bd66eb8f-3046-4e7d-8ed4-8157bca0ef08.html",
+      "contentDigest": "9630a940e3e2bd80d0a9ff25983c4642aae1e41833eb5147782b2fe8cf150416",
+      "promptSource": "message"
+    }
+  ]
+}

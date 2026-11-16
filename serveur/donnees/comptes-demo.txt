@@ -1,0 +1,9 @@
+Portail Scolarité — comptes de démonstration (mots de passe générés au premier démarrage)
+Ne publiez pas ce fichier. Changez un mot de passe : python serveur/portail.py mot-de-passe --email ...
+
+Étudiant·e   ines.benali@etu.universite.fr      a-H5glVZSu2l
+Étudiant·e   yanis.martin@etu.universite.fr     TIKhNK6n1CJ3
+Agent        samira.haddad@universite.fr        5mGDWub4PWAr
+Agent        julien.durand@universite.fr        WwsEHa8bP8iG
+Agent        claire.lefevre@universite.fr       JI5Dkt5zo2NP
+Agent        moussa.ndiaye@universite.fr        fr2-ZEeK7j8t

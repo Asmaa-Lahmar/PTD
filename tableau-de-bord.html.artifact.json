@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "tableau-de-bord.html",
+  "entry": "tableau-de-bord.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-10-15T11:42:28.364Z",
+  "updatedAt": "2026-10-15T11:42:28.364Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 2,
+  "fileName": "index.html",
+  "currentVersionId": "6f5f6bf6-3697-41b2-875a-ad90114ccaf6",
+  "entries": [
+    {
+      "id": "f3d1fd9c-d035-4a17-9e03-28fae7f79eba",
+      "fileName": "index.html",
+      "version": 1,
+      "label": "Version 1",
+      "createdAt": 1792064629810,
+      "source": "ai",
+      "prompt": "Continue from the stopped or incomplete turn. Read the conversation, current project files, and any visible errors, then take the next concrete step. If a primary artifact already exists, update it in place; otherwise create the missing primary artifact and summarize what changed.",
+      "size": 13408,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0001-f3d1fd9c-d035-4a17-9e03-28fae7f79eba.html",
+      "promptSource": "message"
+    },
+    {
+      "id": "6f5f6bf6-3697-41b2-875a-ad90114ccaf6",
+      "fileName": "index.html",
+      "version": 2,
+      "label": "Version 2",
+      "createdAt": 1794839646158,
+      "source": "ai",
+      "prompt": "Recrée les pages profil et statistiques dans le style du Portail Scolarité",
+      "size": 13986,
+      "mime": "text/html; charset=utf-8",
+      "kind": "html",
+      "contentPath": "0002-6f5f6bf6-3697-41b2-875a-ad90114ccaf6.html",
+      "contentDigest": "0360f5b04e661f1a55f810229713fe3b42683e88099835dbd17969f2df81af9c",
+      "promptSource": "message"
+    }
+  ]
+}
