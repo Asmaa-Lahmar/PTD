@@ -7,25 +7,29 @@
 <link rel="stylesheet" href="assets/portail.css">
 <style>
   .nd-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--space-8); align-items: start; }
-  .wizard-steps { display: flex; gap: var(--space-2); margin: var(--space-5) 0 var(--space-6); padding: 0; }
-  .wizard-steps li { list-style: none; flex: 1; font-size: 13px; color: var(--meta); display: flex; flex-direction: column; gap: 6px; }
-  .wizard-steps li::before { content: ""; height: 4px; border-radius: 99px; background: var(--surface-warm); }
-  .wizard-steps li.done::before, .wizard-steps li.on::before { background: var(--fg-2); }
-  .wizard-steps li.on { color: var(--fg); font-weight: 500; }
-  .wizard-steps ol { display: contents; }
+  .wizard-steps { display: flex; align-items: center; gap: var(--space-3); margin: var(--space-5) 0 var(--space-6); padding: 0; max-width: 640px; }
+  .wizard-steps li { list-style: none; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--meta); white-space: nowrap; }
+  .wizard-steps li + li::before { content: ""; width: clamp(16px, 6vw, 72px); height: 1px; background: var(--border-soft); margin-right: 4px; }
+  .wizard-steps .n { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; background: var(--surface); color: var(--muted); box-shadow: inset 0 0 0 1px var(--border-soft); }
+  .wizard-steps li.on { color: var(--fg); }
+  .wizard-steps li.on .n { background: var(--accent); color: var(--accent-on); box-shadow: none; }
+  .wizard-steps li.done { color: var(--fg-2); }
+  .wizard-steps li.done .n { background: var(--mint); color: var(--accent); box-shadow: none; }
+  .wizard-steps li.done + li::before, .wizard-steps li.done + li.on::before { background: var(--accent); }
+  @media (max-width: 560px) { .wizard-steps .t { display: none; } .wizard-steps li.on .t { display: inline; } }
 
   .types { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
   .type-card { position: relative; display: flex; flex-direction: column; gap: 6px; padding: var(--space-5); background: var(--surface); border-radius: var(--radius-md); box-shadow: 0 0 0 1px var(--border-soft); cursor: pointer; transition: box-shadow var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard); }
   .type-card:hover { box-shadow: 0 0 0 1px var(--ring-warm), var(--elev-raised); }
   .type-card input { position: absolute; opacity: 0; pointer-events: none; }
-  .type-card h3 { font-size: 19px; padding-right: 28px; }
+  .type-card h3 { font-size: 15px; padding-right: 28px; }
   .type-card p { font-size: var(--text-sm); color: var(--muted); line-height: 1.5; }
   .type-card .meta { margin-top: auto; padding-top: 6px; }
   .type-card .tick { position: absolute; top: 18px; right: 18px; width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ring-warm); }
-  .type-card:has(input:checked) { box-shadow: 0 0 0 2px var(--fg); background: var(--surface); }
-  .type-card:has(input:checked) .tick { background: var(--fg); box-shadow: inset 0 0 0 5px var(--fg), inset 0 0 0 10px var(--surface); }
+  .type-card:has(input:checked) { box-shadow: 0 0 0 1.5px var(--accent); background: var(--mint); }
+  .type-card:has(input:checked) .tick { background: var(--accent); box-shadow: inset 0 0 0 5px var(--accent), inset 0 0 0 10px var(--surface); }
   .types.need-pick .type-card:not(:has(input:checked)) { box-shadow: 0 0 0 1px var(--danger); }
-  .type-card:has(input:focus-visible) { box-shadow: var(--focus-ring), 0 0 0 1px var(--fg); }
+  .type-card:has(input:focus-visible) { box-shadow: var(--focus-ring), 0 0 0 1.5px var(--accent); }
 
   .identity { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); padding: var(--space-4); background: var(--bg); border-radius: var(--radius-md); border: 1px dashed var(--border-soft); }
   .identity div { font-size: var(--text-sm); min-width: 0; }
@@ -35,8 +39,17 @@
   .fields .full { grid-column: 1 / -1; }
   .field.appear { animation: fieldIn var(--motion-base) var(--ease-standard); }
   @keyframes fieldIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-  .file-drop { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); min-height: 56px; border: 1px dashed var(--ring-warm); border-radius: var(--radius-md); background: var(--surface); font-size: var(--text-sm); color: var(--muted); }
-  .file-drop input { font-size: var(--text-sm); max-width: 100%; }
+  .file-drop { position: relative; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-4); min-height: 60px; border: 1.5px dashed var(--ring-warm); border-radius: var(--radius-md); background: var(--surface); font-size: var(--text-sm); color: var(--muted); transition: background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard); }
+  .file-drop:hover, .file-drop:focus-within { background: var(--mint); border-color: var(--accent); }
+  .file-drop .icon-chip { width: 34px; height: 34px; background: var(--surface); }
+  /* Champ natif masqué mais focalisable ; le libellé fait office de bouton */
+  .file-drop input { position: absolute; width: 1px; height: 1px; min-width: 0; opacity: 0; pointer-events: none; }
+  .file-drop .file-btn { flex: none; color: var(--accent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent), white 55%); }
+  .file-drop .file-btn:hover { background: var(--mint); }
+  .file-drop:focus-within .file-btn { box-shadow: inset 0 0 0 1px var(--accent), var(--focus-ring); }
+  .file-drop .file-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .file-drop.has-file .file-name { color: var(--fg); font-weight: 600; }
+  .file-drop.has-file { border-style: solid; background: var(--mint); }
 
   /* Barre d'action collante : le bouton reste sous le pouce, avec le choix courant visible */
   .actions { position: sticky; bottom: 0; z-index: 20; display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-8); padding: var(--space-4) 0; background: color-mix(in oklab, var(--bg), transparent 4%); backdrop-filter: blur(8px); border-top: 1px solid var(--border-soft); }
@@ -45,21 +58,21 @@
   #next.is-idle { background: var(--surface-warm); color: var(--muted); box-shadow: 0 0 0 1px var(--ring-warm); }
   .type-foot { margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap; }
   .sla-pill { font-size: 12px; font-weight: 500; letter-spacing: .12px; padding: 2px 9px; border-radius: var(--radius-pill); background: var(--bg); color: var(--fg-2); box-shadow: 0 0 0 1px var(--border-soft); white-space: nowrap; }
-  .type-card:has(input:checked) .sla-pill { background: var(--fg); color: var(--surface); box-shadow: none; }
+  .type-card:has(input:checked) .sla-pill { background: var(--accent); color: var(--accent-on); box-shadow: none; }
 
-  .route { position: sticky; top: 88px; }
+  .route { position: sticky; top: 88px; background: var(--mint); border-color: var(--border-soft); box-shadow: none; }
   .route dl { margin: 0; display: grid; gap: var(--space-3); }
   .route dt { font-size: 12px; color: var(--meta); }
   .route dd { margin: 2px 0 0; font-weight: 500; }
-  .route .big { font-family: var(--font-display); font-size: var(--text-2xl); line-height: 1.1; font-weight: 500; }
+  .route .big { font-family: var(--font-display); font-size: var(--text-2xl); line-height: 1.1; font-weight: 700; color: var(--accent); }
   .route .flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--muted); padding-top: var(--space-3); border-top: 1px solid var(--border-soft); }
-  .route .flow span { padding: 2px 8px; border-radius: 6px; background: var(--bg); }
+  .route .flow span { padding: 2px 8px; border-radius: 6px; background: var(--surface); }
 
   .recap { display: grid; grid-template-columns: 200px 1fr; gap: 0; font-size: 15px; }
   .recap dt, .recap dd { margin: 0; padding: 10px 0; border-bottom: 1px solid var(--border); }
   .recap dt { color: var(--muted); }
   .check { display: flex; gap: var(--space-3); align-items: flex-start; font-size: 15px; cursor: pointer; }
-  .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--fg); flex: none; }
+  .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
 
   section.done { text-align: center; max-width: 560px; margin: var(--space-8) auto; }
   section.done .seal { width: 64px; height: 64px; margin: 0 auto var(--space-5); border-radius: 50%; background: var(--success-tint); color: var(--success-ink); display: grid; place-items: center; }
@@ -76,7 +89,7 @@
     /* au-dessus de la barre d'onglets mobile */
     .actions { bottom: calc(65px + env(safe-area-inset-bottom)); margin-left: calc(-1 * var(--container-gutter-phone)); margin-right: calc(-1 * var(--container-gutter-phone)); padding: var(--space-3) var(--container-gutter-phone); }
     .type-card { padding: var(--space-4); }
-    .type-card h3 { font-size: 18px; }
+    .type-card h3 { font-size: 15px; }
   }
   @media (max-width: 600px) {
     .types, .fields { grid-template-columns: 1fr; }
@@ -92,9 +105,11 @@
 <header id="s-top"></header>
 <main class="s-main" data-od-id="new-request">
   <div id="wizard">
+    <div class="page-banner"><div>
     <p class="eyebrow">Nouvelle demande</p>
     <h1 data-od-id="new-request-title" id="title">Quel document vous faut-il ?</h1>
-    <ol class="wizard-steps" aria-label="Progression"><li id="st1" class="on">1 · Type de document</li><li id="st2">2 · Informations</li><li id="st3">3 · Vérification</li></ol>
+    </div></div>
+    <ol class="wizard-steps" aria-label="Progression"><li id="st1" class="on"><span class="n">1</span><span class="t">Type de document</span></li><li id="st2"><span class="n">2</span><span class="t">Informations</span></li><li id="st3"><span class="n">3</span><span class="t">Vérification</span></li></ol>
 
     <div class="nd-grid">
       <form id="form" novalidate>
@@ -195,10 +210,17 @@
       return '<label class="chip"><input type="' + f.type + '" name="' + id + '" value="' + P.esc(o) + '" data-f="' + f.id + '"' + (on ? ' checked' : '') + '><span>' + o + '</span></label>'; }).join('') + '</div>';
     else if (f.type === 'textarea') ctrl = '<textarea id="' + id + '" data-f="' + f.id + '" rows="3">' + P.esc(v || '') + '</textarea>';
     else if (f.type === 'switch') return '<label class="switch field full" data-od-id="field-' + f.id + '"><span><span class="label" style="font-weight:500;color:var(--fg-2)">' + f.label + '</span>' + (f.help ? '<span class="field-help" style="display:block">' + f.help + '</span>' : '') + '</span><input type="checkbox" data-f="' + f.id + '"' + (v ? ' checked' : '') + '></label>';
-    else if (f.type === 'file') ctrl = '<div class="file-drop"><input type="file" id="' + id + '" data-f="' + f.id + '" accept=".pdf,.jpg,.jpeg,.png">' + (v ? '<span>' + P.esc(v) + '</span>' : '') + '</div>';
+    else if (f.type === 'file') ctrl = '<div class="file-drop' + (v ? ' has-file' : '') + '"><span class="icon-chip" aria-hidden="true">' + FILE_ICON + '</span><input type="file" id="' + id + '" data-f="' + f.id + '" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" aria-describedby="' + id + '-name"><label for="' + id + '" class="btn btn-secondary btn-sm file-btn">' + (v ? 'Changer de fichier' : 'Choisir un fichier') + '</label><span class="file-name" id="' + id + '-name">' + fileLabel(v) + '</span></div>';
     else ctrl = '<input type="' + f.type + '" id="' + id + '" data-f="' + f.id + '" value="' + P.esc(v == null ? '' : v) + '"' + (f.min != null ? ' min="' + f.min + '" max="' + f.max + '"' : '') + '>';
     return '<div class="field' + full + '" data-od-id="field-' + f.id + '" data-wrap="' + f.id + '"><' + (f.type === 'radio' || f.type === 'checkbox' ? 'span class="label"' : 'label for="' + id + '"') + '>' + f.label + req + '</' + (f.type === 'radio' || f.type === 'checkbox' ? 'span' : 'label') + '>' + ctrl +
       (f.help ? '<span class="field-help">' + f.help + '</span>' : '') + '<span class="field-error hidden" data-err="' + f.id + '"></span></div>';
+  }
+  const FILE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 18v-6M9 15l3-3 3 3"/></svg>';
+  const fileLabel = name => name ? '✓ ' + P.esc(name) : 'PDF, JPEG ou PNG · 5 Mo maximum';
+  function checkFile(file) {
+    if (file.size > 5 * 1024 * 1024) return '« ' + file.name + ' » dépasse 5 Mo.';
+    if (!/\.(pdf|jpe?g|png)$/i.test(file.name)) return 'Formats acceptés : PDF, JPEG ou PNG.';
+    return '';
   }
   let shown = new Set();
   function renderFields() {
@@ -218,7 +240,16 @@
     const f = P.typeById(typeId).fields.find(x => x.id === k);
     if (f.type === 'checkbox') data[k] = [...document.querySelectorAll('input[name="f-' + k + '"]:checked')].map(i => i.value);
     else if (f.type === 'switch') data[k] = el.checked;
-    else if (f.type === 'file') { files[k] = el.files[0] || null; data[k] = el.files[0] ? el.files[0].name : ''; }
+    else if (f.type === 'file') {
+      const file = el.files[0], err = file && checkFile(file);
+      if (err) { el.value = ''; P.toast('<b>Fichier refusé.</b> ' + P.esc(err)); }
+      // Annuler la boîte de dialogue ne retire pas un fichier déjà choisi.
+      if (file && !err) { files[k] = file; data[k] = file.name; }
+      const drop = el.closest('.file-drop');
+      drop.classList.toggle('has-file', !!data[k]);
+      drop.querySelector('.file-name').innerHTML = fileLabel(data[k]);
+      drop.querySelector('.file-btn').textContent = data[k] ? 'Changer de fichier' : 'Choisir un fichier';
+    }
     else if (f.type === 'number') data[k] = +el.value;
     else data[k] = el.value;
     // Re-rendre seulement si la visibilité change (ne pas casser la saisie en cours)

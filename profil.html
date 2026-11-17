@@ -9,8 +9,8 @@
   .p-head { margin-bottom: var(--space-6); }
   .p-grid { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: var(--space-8); align-items: start; }
   .id-card { text-align: center; }
-  .avatar.xl { width: 88px; height: 88px; font-size: 30px; font-family: var(--font-display); font-weight: 500; margin: 0 auto var(--space-4); }
-  .id-card h2 { font-size: 28px; }
+  .avatar.xl { width: 88px; height: 88px; font-size: 30px; font-family: var(--font-display); font-weight: 700; background: var(--mint); color: var(--accent); box-shadow: none; margin: 0 auto var(--space-4); }
+  .id-card h2 { font-size: 20px; }
   .kv { margin: var(--space-5) 0 var(--space-4); text-align: left; }
   .kv div { display: flex; flex-direction: column; gap: 2px; padding: var(--space-3) 0; border-top: 1px solid var(--border); }
   .kv dt { font-size: 12px; letter-spacing: .3px; text-transform: uppercase; color: var(--meta); font-weight: 500; }
@@ -18,9 +18,9 @@
   .id-card .field-help { text-align: left; }
   .counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); margin: var(--space-4) 0; }
   .count-box { padding: var(--space-3); background: var(--bg); border-radius: var(--radius-sm); }
-  .count-box b { display: block; font-family: var(--font-display); font-weight: 500; font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .count-box b { display: block; font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1.1; font-variant-numeric: tabular-nums; }
   .count-box span { font-size: 12px; color: var(--muted); }
-  .sec-title { font-size: 22px; margin-bottom: 4px; }
+  .sec-title { font-size: 16px; margin-bottom: 4px; }
   .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); margin-top: var(--space-5); }
   .form-grid .full { grid-column: 1 / -1; }
   .form-actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--border); }
@@ -42,7 +42,7 @@
 <body>
 <header id="s-top"></header>
 <main class="s-main" data-od-id="profile">
-  <div class="p-head">
+  <div class="p-head page-banner">
     <p class="eyebrow">Mon compte</p>
     <h1 data-od-id="profile-title">Mon profil</h1>
   </div>

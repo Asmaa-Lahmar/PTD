@@ -38,6 +38,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = Path(os.environ.get('PORTAIL_DATA', Path(__file__).resolve().parent / 'donnees'))
 DAY = 86_400_000
 SESSION_MS = 8 * 3600 * 1000
+REMEMBER_MS = 30 * 86_400_000
 MAX_UPLOAD = 5 * 1024 * 1024
 MAX_BODY = 12 * 1024 * 1024
 UNIVERSITE = 'Université — nom à préciser'
@@ -765,12 +766,12 @@ COOKIE = {'etudiant': 'ps_etudiant', 'agent': 'ps_agent'}
 _attempts = {}
 
 
-def new_session(user_id, espace):
+def new_session(user_id, espace, duration=SESSION_MS):
     token = secrets.token_urlsafe(32)
     with tx() as c:
         c.execute('DELETE FROM sessions WHERE expires < ?', (now_ms(),))
         c.execute('INSERT INTO sessions(token_hash, user_id, espace, expires) VALUES(?,?,?,?)',
-                  (hashlib.sha256(token.encode()).hexdigest(), user_id, espace, now_ms() + SESSION_MS))
+                  (hashlib.sha256(token.encode()).hexdigest(), user_id, espace, now_ms() + duration))
     return token
 
 
@@ -794,7 +795,7 @@ def throttled(key):
 PUBLIC_PAGES = {'index.html', 'connexion.html'}
 STUDENT_PAGES = {'nouvelle-demande.html', 'mes-demandes.html', 'notifications.html', 'profil.html'}
 AGENT_PAGES = {'file-traitement.html', 'tableau-de-bord.html', 'statistiques.html'}
-ASSETS = {'assets/portail.css', 'assets/portail.js'}
+ASSETS = {'assets/portail.css', 'assets/portail.js', 'assets/logo-ensa-khouribga.png', 'assets/ensa-batiment.jpg'}
 
 
 def parse_multipart(content_type, body):
@@ -1016,8 +1017,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if user['role'] != espace:
             raise ApiError(403, 'Ce compte donne accès à ' + ('l’espace étudiant.' if user['role'] == 'etudiant' else 'l’espace scolarité (back-office).'))
         _attempts.pop(key, None)
-        token = new_session(user['id'], espace)
-        cookie = f'{COOKIE[espace]}={token}; Path=/; HttpOnly; SameSite=Strict; Max-Age={SESSION_MS // 1000}'
+        # « Se souvenir de moi » : 30 jours ; sinon cookie de session (8 h maximum côté serveur).
+        remember = payload.get('remember') is True
+        token = new_session(user['id'], espace, REMEMBER_MS if remember else SESSION_MS)
+        cookie = f'{COOKIE[espace]}={token}; Path=/; HttpOnly; SameSite=Strict' + (f'; Max-Age={REMEMBER_MS // 1000}' if remember else '')
         if self.server.secure_cookies:
             cookie += '; Secure'
         self.json(200, {'ok': True}, headers={'Set-Cookie': cookie})

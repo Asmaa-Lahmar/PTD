@@ -295,12 +295,14 @@
     back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
   };
 
+  // Logo : toque universitaire dans un écusson.
+
   function mountStudent(active) {
     const n = unread();
     const links = [['nouvelle', 'nouvelle-demande.html', 'Nouvelle demande', ICON.plus], ['suivi', 'mes-demandes.html', 'Mes demandes', ICON.list], ['notifs', 'notifications.html', 'Notifications', ICON.bell]];
     const top = document.getElementById('s-top');
     top.className = 's-top'; top.setAttribute('data-od-id', 'student-header');
-    top.innerHTML = '<div class="s-top-inner"><a class="brand" href="index.html" data-od-id="brand"><b>Portail Scolarité</b><small>' + UNIVERSITE + '</small></a>' +
+    top.innerHTML = '<div class="s-top-inner"><a class="brand" href="mes-demandes.html" aria-label="Portail Scolarité — mes demandes"><img class="s-logo" src="assets/logo-ensa-khouribga.png" alt="ENSA Khouribga"></a>' +
       '<nav class="s-nav" aria-label="Navigation principale">' + links.map(([k, h, l]) => '<a href="' + h + '" data-od-id="nav-' + k + '"' + (k === active ? ' aria-current="page"' : '') + '>' + l + (k === 'notifs' && n ? ' <span class="dot-count" data-unread>' + n + '</span>' : '') + '</a>').join('') + '</nav>' +
       '<a class="s-user" href="profil.html" data-od-id="nav-profil" aria-label="Mon profil, ' + esc(ME.name) + '"' + (active === 'profil' ? ' aria-current="page"' : '') + '><div class="who"><b>' + esc(ME.name) + '</b><span>' + esc(ME.programme) + '</span></div><div class="avatar" aria-hidden="true">' + esc(ME.initials) + '</div></a></div>';
     document.querySelectorAll('.s-tabbar').forEach(n => n.remove());
@@ -314,7 +316,7 @@
     const late = open.filter(isLate).length;
     const side = document.getElementById('a-side');
     side.className = 'a-side'; side.setAttribute('data-od-id', 'agent-sidebar');
-    side.innerHTML = '<a class="brand" href="index.html"><b>Scolarité</b><small>Back-office</small></a>' +
+    side.innerHTML = '<a class="brand" href="index.html" aria-label="Portail Scolarité — accueil"><img class="a-logo" src="assets/logo-ensa-khouribga.png" alt="ENSA Khouribga"></a>' +
       '<nav class="a-nav" aria-label="Back-office"><div class="eyebrow">Traitement</div>' +
       '<a href="file-traitement.html" data-od-id="nav-file"' + (active === 'file' ? ' aria-current="page"' : '') + '>' + ICON.inbox + 'File de traitement <span class="n' + (late ? ' alert' : '') + '" title="' + late + ' en retard">' + (late || open.length) + '</span></a>' +
       '<a href="tableau-de-bord.html" data-od-id="nav-dashboard"' + (active === 'dash' ? ' aria-current="page"' : '') + '>' + ICON.chart + 'Tableau de bord</a>' +

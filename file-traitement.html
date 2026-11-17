@@ -7,10 +7,10 @@
 <link rel="stylesheet" href="assets/portail.css">
 <style>
   .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); margin-bottom: var(--space-6); }
-  .kpi { padding: var(--space-4) var(--space-5); background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-md); text-align: left; cursor: pointer; transition: box-shadow var(--motion-fast) var(--ease-standard); }
+  .kpi { padding: var(--space-4) var(--space-5); background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-lg); box-shadow: var(--elev-card); text-align: left; cursor: pointer; transition: box-shadow var(--motion-fast) var(--ease-standard); }
   .kpi:hover { box-shadow: 0 0 0 1px var(--ring-warm); }
   .kpi span { display: block; font-size: 13px; color: var(--muted); }
-  .kpi b { font-family: var(--font-display); font-weight: 500; font-size: var(--text-2xl); line-height: 1.2; }
+  .kpi b { font-family: var(--font-display); font-weight: 700; font-size: var(--text-2xl); line-height: 1.2; }
   .kpi.danger b { color: var(--danger); }
   .toolbar { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; margin-bottom: var(--space-4); }
   .toolbar .input { width: auto; min-width: 0; }

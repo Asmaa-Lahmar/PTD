@@ -6,42 +6,107 @@
 <title>Connexion · Portail Scolarité</title>
 <link rel="stylesheet" href="assets/portail.css">
 <style>
-  .login-wrap { max-width: 440px; margin: 0 auto; padding: var(--space-12) var(--container-gutter-phone) var(--space-12); }
-  .login-wrap h1 { font-size: clamp(30px, 4vw, 40px); margin: 6px 0 var(--space-2); }
-  .login-wrap .tabs { margin: var(--space-6) 0 var(--space-5); width: 100%; }
-  .login-wrap .tab { flex: 1; justify-content: center; }
-  .login-wrap form > .field + .field { margin-top: var(--space-4); }
-  .login-wrap .field input { width: 100%; }
-  .login-err { margin-top: var(--space-4); font-size: 15px; }
-  .login-foot { margin-top: var(--space-5); }
+  .login-wrap { max-width: 460px; margin: 0 auto; padding: var(--space-12) var(--container-gutter-phone); }
+  .login-card { padding: var(--space-8); }
+  .login-card h1 { font-size: 24px; margin-bottom: var(--space-5); }
+  .login-card .tabs { width: 100%; margin-bottom: var(--space-6); }
+  .login-card .tab { flex: 1; justify-content: center; }
+  .login-card .field + .field { margin-top: var(--space-4); }
+  .pw { position: relative; }
+  .pw input { padding-right: 44px; }
+  .pw button { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); width: 32px; height: 32px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); display: grid; place-items: center; cursor: pointer; }
+  .pw button:hover { background: var(--surface-warm); color: var(--fg); }
+  .pw button svg { width: 18px; height: 18px; }
+  .opts { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-4); font-size: var(--text-sm); }
+  .opts label { display: inline-flex; align-items: center; gap: 8px; color: var(--fg-2); cursor: pointer; }
+  .opts input { width: 16px; height: 16px; margin: 0; }
+  .opts button { border: 0; background: none; padding: 0; color: var(--accent); font-weight: 500; cursor: pointer; }
+  .opts button:hover { text-decoration: underline; }
+  .forgot { margin-top: var(--space-3); padding: 10px 12px; border-radius: var(--radius-sm); background: var(--mint); font-size: var(--text-sm); color: var(--fg-2); }
+  .login-err { margin-top: var(--space-4); font-size: 14px; }
+  /* ── Style de l'accueil : photo ENSA, barre transparente, carte en verre sombre ── */
+  body { min-height: 100vh; background: #0b0c10; }
+  body::before, body::after { content: ""; position: fixed; inset: 0; z-index: -1; }
+  body::before { background: url("assets/ensa-batiment.jpg") center 35% / cover no-repeat; animation: bg-zoom 24s ease-out both; }
+  body::after { background: radial-gradient(ellipse at 50% 30%, rgba(0,0,0,.25), transparent 70%), linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(20,6,12,.55) 45%, rgba(0,0,0,.80) 100%); }
+  @keyframes bg-zoom { from { transform: scale(1.08); } to { transform: scale(1); } }
+  .s-top { border-bottom: 0; }
+  .s-top:not(.is-scrolled) { background: transparent; }
+  .s-top.is-scrolled { box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+  .s-top .brand-scroll { grid-column: 1; justify-self: start; opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s; }
+  .s-top.is-scrolled .brand-scroll { opacity: 1; visibility: visible; transform: none; transition: opacity .3s ease, transform .3s ease, visibility 0s; }
+  .s-top .brand-scroll img { display: block; height: 44px; width: auto; }
+
+  .login-wrap { max-width: 500px; padding-top: clamp(40px, 7vw, 88px); padding-bottom: 64px; }
+  .login-card { position: relative; overflow: hidden; padding: 40px; border-radius: 22px; color: #fff;
+    background: linear-gradient(160deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.05) 55%, rgba(139,21,56,.10) 100%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid rgba(255,255,255,.18); box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 24px 60px rgba(0,0,0,.45); }
+  .login-card::after { content: ""; position: absolute; width: 300px; height: 300px; right: -110px; top: -130px; border-radius: 50%; background: radial-gradient(circle, rgba(210,58,104,.45), transparent 70%); opacity: .6; pointer-events: none; }
+  .login-card > * { position: relative; z-index: 1; }
+  .login-card > .hidden { display: none; }
+  .login-card h1 { color: #fff; font-size: 30px; letter-spacing: -0.02em; text-shadow: 0 2px 18px rgba(0,0,0,.35); }
+
+  .login-card .tabs { background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 5px; }
+  .login-card .tab { min-height: 42px; border-radius: 10px; color: rgba(255,255,255,.75); font-size: 15px; }
+  .login-card .tab:hover { color: #fff; }
+  .login-card .tab[aria-selected=true] { background: linear-gradient(135deg, #c22a5a, #6d0f2b); color: #fff; box-shadow: 0 8px 20px rgba(139,21,56,.5), inset 0 1px 0 rgba(255,255,255,.25); }
+
+  .login-card .field label { color: rgba(255,255,255,.88); font-weight: 600; }
+  .login-card .field input { height: 50px; border-radius: 12px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: #fff; font-size: 15.5px; }
+  .login-card .field input::placeholder { color: rgba(255,255,255,.45); }
+  .login-card .field input:hover { border-color: rgba(255,255,255,.32); }
+  .login-card .field input:focus-visible { border-color: rgba(255,255,255,.7); background: rgba(255,255,255,.12); box-shadow: 0 0 0 4px rgba(210,58,104,.35); outline: none; }
+  .login-card .field input:-webkit-autofill { -webkit-text-fill-color: #fff; caret-color: #fff; transition: background-color 9999s ease 0s; box-shadow: inset 0 0 0 100px rgba(40,22,30,.9); }
+  .login-card .pw button { color: rgba(255,255,255,.7); }
+  .login-card .pw button:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+  .login-card .opts label { color: rgba(255,255,255,.82); }
+  .login-card .opts input { accent-color: #c22a5a; }
+  .login-card .opts button { color: #fff; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255,255,255,.4); text-underline-offset: 3px; }
+  .login-card .opts button:hover { text-decoration-color: #fff; }
+  .login-card .forgot { background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.88); }
+  .login-card .login-err { color: #ffb4c4; }
+
+  .login-card #submit { height: 52px; border-radius: 14px; font-size: 16px; font-weight: 600; background: #fff; color: #6d0f2b; box-shadow: 0 8px 22px rgba(0,0,0,.25); transition: background .25s, color .25s, box-shadow .25s; }
+  .login-card #submit:hover { background: linear-gradient(135deg, #c22a5a, #8b1538); color: #fff; box-shadow: 0 12px 30px rgba(139,21,56,.55); }
+  .login-card #submit:focus-visible { outline: 3px solid rgba(255,255,255,.7); outline-offset: 3px; }
+  @media (max-width: 760px) { .s-top .brand-scroll img { height: 36px; } }
+  @media (max-width: 600px) { .login-card { padding: 28px 22px; } }
+  @media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
 </style>
 </head>
 <body>
-<header class="s-top"><div class="s-top-inner"><a class="brand" href="index.html"><b>Portail Scolarité</b><small>Université — nom à préciser</small></a></div></header>
+<header class="s-top"><div class="s-top-inner"><a class="brand brand-scroll" href="index.html" aria-label="Portail Scolarité — accueil" tabindex="-1"><img src="assets/logo-ensa-khouribga.png" alt="ENSA Khouribga"></a>
+  <nav class="s-nav" aria-label="Navigation principale"><a href="index.html">Accueil</a><a href="connexion.html" aria-current="page">Connexion</a></nav></div></header>
+<script>(function () { var h = document.querySelector(".s-top"); function f() { var s = window.scrollY > 10; h.classList.toggle("is-scrolled", s); var b = h.querySelector(".brand-scroll"); if (b) b.tabIndex = s ? 0 : -1; } f(); window.addEventListener("scroll", f, { passive: true }); })();</script>
 
 <main class="login-wrap" data-od-id="login">
-  <p class="eyebrow">Connexion</p>
-  <h1 data-od-id="login-title">Accédez à votre espace</h1>
-  <p class="body-muted">Utilisez le compte fourni par l’université.</p>
-
-  <div class="tabs" role="tablist" aria-label="Espace" id="espaces">
-    <button class="tab" role="tab" type="button" data-espace="etudiant" data-od-id="tab-student">Espace étudiant</button>
-    <button class="tab" role="tab" type="button" data-espace="agent" data-od-id="tab-agent">Back-office scolarité</button>
-  </div>
-
-  <form class="card" id="form" novalidate data-od-id="login-form">
+  <form class="card login-card" id="form" novalidate data-od-id="login-form">
+    <h1 data-od-id="login-title">Connexion</h1>
+    <div class="tabs" role="tablist" aria-label="Espace" id="espaces">
+      <button class="tab" role="tab" type="button" data-espace="etudiant" data-od-id="tab-student">Étudiant</button>
+      <button class="tab" role="tab" type="button" data-espace="agent" data-od-id="tab-agent">Agent</button>
+    </div>
     <div class="field">
-      <label for="email">Adresse e-mail</label>
+      <label for="email">Adresse universitaire</label>
       <input type="email" id="email" autocomplete="username" required maxlength="254" placeholder="prenom.nom@etu.universite.fr">
     </div>
     <div class="field">
       <label for="password">Mot de passe</label>
-      <input type="password" class="input" id="password" autocomplete="current-password" required maxlength="200">
+      <div class="pw">
+        <input type="password" class="input" id="password" autocomplete="current-password" required maxlength="200">
+        <button type="button" id="toggle-pw" aria-label="Afficher le mot de passe" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
     </div>
+    <div class="opts">
+      <label><input type="checkbox" id="remember"> Se souvenir de moi</label>
+      <button type="button" id="forgot-btn" aria-expanded="false" aria-controls="forgot">Mot de passe oublié ?</button>
+    </div>
+    <p class="forgot hidden" id="forgot">Pour réinitialiser votre mot de passe, contactez la scolarité de votre composante ou le service informatique de l’université.</p>
     <p class="field-error login-err hidden" id="err" role="alert" tabindex="-1"></p>
-    <button type="submit" class="btn btn-primary btn-block" id="submit" style="margin-top:var(--space-5)" data-od-id="btn-login">Se connecter</button>
+    <button type="submit" class="btn btn-primary btn-block" id="submit" style="margin-top:var(--space-6)" data-od-id="btn-login">Se connecter</button>
   </form>
-  <p class="field-help login-foot">Mot de passe oublié ou compte manquant : contactez la scolarité de votre composante.</p>
 </main>
 
 <script>
@@ -63,13 +128,23 @@
     const b = e.target.closest('[data-espace]');
     if (b) { espace = b.dataset.espace; showError(''); render(); }
   });
+  $('#toggle-pw').addEventListener('click', () => {
+    const shown = $('#password').type === 'text';
+    $('#password').type = shown ? 'password' : 'text';
+    $('#toggle-pw').setAttribute('aria-pressed', String(!shown));
+    $('#toggle-pw').setAttribute('aria-label', shown ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
+  });
+  $('#forgot-btn').addEventListener('click', () => {
+    const open = $('#forgot').classList.toggle('hidden');
+    $('#forgot-btn').setAttribute('aria-expanded', String(!open));
+  });
   $('#form').addEventListener('submit', async e => {
     e.preventDefault();
     const email = $('#email').value.trim(), password = $('#password').value;
     if (!email || !password) return showError('Saisissez votre adresse e-mail et votre mot de passe.');
     $('#submit').disabled = true; showError('');
     try {
-      const res = await fetch('/api/session', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Espace': espace }, body: JSON.stringify({ email, password, espace }) });
+      const res = await fetch('/api/session', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Espace': espace }, body: JSON.stringify({ email, password, espace, remember: $('#remember').checked }) });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) { showError(json.error || 'Connexion impossible.'); $('#password').value = ''; return; }
       location.href = target();

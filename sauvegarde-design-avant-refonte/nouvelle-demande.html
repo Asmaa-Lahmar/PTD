@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nouvelle demande · Portail Scolarité</title>
+<link rel="stylesheet" href="assets/portail.css">
+<style>
+  .nd-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: var(--space-8); align-items: start; }
+  .wizard-steps { display: flex; gap: var(--space-2); margin: var(--space-5) 0 var(--space-6); padding: 0; }
+  .wizard-steps li { list-style: none; flex: 1; font-size: 13px; color: var(--meta); display: flex; flex-direction: column; gap: 6px; }
+  .wizard-steps li::before { content: ""; height: 4px; border-radius: 99px; background: var(--surface-warm); }
+  .wizard-steps li.done::before, .wizard-steps li.on::before { background: var(--fg-2); }
+  .wizard-steps li.on { color: var(--fg); font-weight: 500; }
+  .wizard-steps ol { display: contents; }
+
+  .types { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .type-card { position: relative; display: flex; flex-direction: column; gap: 6px; padding: var(--space-5); background: var(--surface); border-radius: var(--radius-md); box-shadow: 0 0 0 1px var(--border-soft); cursor: pointer; transition: box-shadow var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard); }
+  .type-card:hover { box-shadow: 0 0 0 1px var(--ring-warm), var(--elev-raised); }
+  .type-card input { position: absolute; opacity: 0; pointer-events: none; }
+  .type-card h3 { font-size: 19px; padding-right: 28px; }
+  .type-card p { font-size: var(--text-sm); color: var(--muted); line-height: 1.5; }
+  .type-card .meta { margin-top: auto; padding-top: 6px; }
+  .type-card .tick { position: absolute; top: 18px; right: 18px; width: 20px; height: 20px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--ring-warm); }
+  .type-card:has(input:checked) { box-shadow: 0 0 0 2px var(--fg); background: var(--surface); }
+  .type-card:has(input:checked) .tick { background: var(--fg); box-shadow: inset 0 0 0 5px var(--fg), inset 0 0 0 10px var(--surface); }
+  .types.need-pick .type-card:not(:has(input:checked)) { box-shadow: 0 0 0 1px var(--danger); }
+  .type-card:has(input:focus-visible) { box-shadow: var(--focus-ring), 0 0 0 1px var(--fg); }
+
+  .identity { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); padding: var(--space-4); background: var(--bg); border-radius: var(--radius-md); border: 1px dashed var(--border-soft); }
+  .identity div { font-size: var(--text-sm); min-width: 0; }
+  .identity span { display: block; color: var(--meta); font-size: 12px; }
+  .identity b { font-weight: 500; overflow-wrap: anywhere; }
+  .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-4); }
+  .fields .full { grid-column: 1 / -1; }
+  .field.appear { animation: fieldIn var(--motion-base) var(--ease-standard); }
+  @keyframes fieldIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .file-drop { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); min-height: 56px; border: 1px dashed var(--ring-warm); border-radius: var(--radius-md); background: var(--surface); font-size: var(--text-sm); color: var(--muted); }
+  .file-drop input { font-size: var(--text-sm); max-width: 100%; }
+
+  /* Barre d'action collante : le bouton reste sous le pouce, avec le choix courant visible */
+  .actions { position: sticky; bottom: 0; z-index: 20; display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-8); padding: var(--space-4) 0; background: color-mix(in oklab, var(--bg), transparent 4%); backdrop-filter: blur(8px); border-top: 1px solid var(--border-soft); }
+  .sel-sum { flex: 1; min-width: 0; font-size: var(--text-sm); line-height: 1.35; color: var(--muted); }
+  .sel-sum b { display: block; color: var(--fg); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #next.is-idle { background: var(--surface-warm); color: var(--muted); box-shadow: 0 0 0 1px var(--ring-warm); }
+  .type-foot { margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap; }
+  .sla-pill { font-size: 12px; font-weight: 500; letter-spacing: .12px; padding: 2px 9px; border-radius: var(--radius-pill); background: var(--bg); color: var(--fg-2); box-shadow: 0 0 0 1px var(--border-soft); white-space: nowrap; }
+  .type-card:has(input:checked) .sla-pill { background: var(--fg); color: var(--surface); box-shadow: none; }
+
+  .route { position: sticky; top: 88px; }
+  .route dl { margin: 0; display: grid; gap: var(--space-3); }
+  .route dt { font-size: 12px; color: var(--meta); }
+  .route dd { margin: 2px 0 0; font-weight: 500; }
+  .route .big { font-family: var(--font-display); font-size: var(--text-2xl); line-height: 1.1; font-weight: 500; }
+  .route .flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 12px; color: var(--muted); padding-top: var(--space-3); border-top: 1px solid var(--border-soft); }
+  .route .flow span { padding: 2px 8px; border-radius: 6px; background: var(--bg); }
+
+  .recap { display: grid; grid-template-columns: 200px 1fr; gap: 0; font-size: 15px; }
+  .recap dt, .recap dd { margin: 0; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .recap dt { color: var(--muted); }
+  .check { display: flex; gap: var(--space-3); align-items: flex-start; font-size: 15px; cursor: pointer; }
+  .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--fg); flex: none; }
+
+  section.done { text-align: center; max-width: 560px; margin: var(--space-8) auto; }
+  section.done .seal { width: 64px; height: 64px; margin: 0 auto var(--space-5); border-radius: 50%; background: var(--success-tint); color: var(--success-ink); display: grid; place-items: center; }
+  section.done .seal svg { width: 30px; height: 30px; }
+  section.done .ref { display: inline-block; margin: var(--space-4) 0; padding: 6px 14px; border-radius: var(--radius-sm); background: var(--surface-warm); }
+
+  @media (max-width: 900px) {
+    .nd-grid { grid-template-columns: 1fr; }
+    .route { position: static; order: -1; }
+    .route .card-body-extra { display: none; }
+    .route.is-empty { display: none; }
+  }
+  @media (max-width: 760px) {
+    /* au-dessus de la barre d'onglets mobile */
+    .actions { bottom: calc(65px + env(safe-area-inset-bottom)); margin-left: calc(-1 * var(--container-gutter-phone)); margin-right: calc(-1 * var(--container-gutter-phone)); padding: var(--space-3) var(--container-gutter-phone); }
+    .type-card { padding: var(--space-4); }
+    .type-card h3 { font-size: 18px; }
+  }
+  @media (max-width: 600px) {
+    .types, .fields { grid-template-columns: 1fr; }
+    .identity { grid-template-columns: 1fr 1fr; }
+    .recap { grid-template-columns: 1fr; }
+    .recap dt { border: 0; padding-bottom: 0; font-size: 13px; }
+    .route .big { font-size: var(--text-xl); }
+    .actions #prev { padding: 0 var(--space-3); }
+  }
+</style>
+</head>
+<body>
+<header id="s-top"></header>
+<main class="s-main" data-od-id="new-request">
+  <div id="wizard">
+    <p class="eyebrow">Nouvelle demande</p>
+    <h1 data-od-id="new-request-title" id="title">Quel document vous faut-il ?</h1>
+    <ol class="wizard-steps" aria-label="Progression"><li id="st1" class="on">1 · Type de document</li><li id="st2">2 · Informations</li><li id="st3">3 · Vérification</li></ol>
+
+    <div class="nd-grid">
+      <form id="form" novalidate>
+        <section id="step1" data-od-id="step-type">
+          <p class="field-error hidden" id="type-err" role="alert" style="margin-bottom:var(--space-3);font-size:15px" data-od-id="type-error">Sélectionnez un type de document ci-dessous pour continuer.</p>
+          <div class="types" role="radiogroup" aria-label="Type de document" id="types"></div>
+        </section>
+        <section id="step2" class="hidden" data-od-id="step-fields">
+          <div class="identity" data-od-id="identity-prefill">
+            <div><span>Nom</span><b id="id-name"></b></div>
+            <div><span>N° étudiant</span><b id="id-num" class="num"></b></div>
+            <div><span>Formation</span><b id="id-prog"></b></div>
+          </div>
+          <p class="field-help" style="margin:8px 0 var(--space-6)">Ces informations sont reprises automatiquement de votre dossier.</p>
+          <div class="fields" id="fields"></div>
+          <div class="field full" style="margin-top:var(--space-5)">
+            <label for="commentaire">Commentaire pour le service <span class="meta">(facultatif)</span></label>
+            <textarea id="commentaire" rows="3" placeholder="Une précision utile au traitement"></textarea>
+          </div>
+        </section>
+        <section id="step3" class="hidden" data-od-id="step-review">
+          <div class="card">
+            <div class="row-between" style="margin-bottom:var(--space-3)"><h2 id="rv-title"></h2><button type="button" class="btn btn-ghost btn-sm" data-goto="2">Modifier</button></div>
+            <dl class="recap" id="recap"></dl>
+          </div>
+          <label class="check" style="margin-top:var(--space-5)" data-od-id="certify">
+            <input type="checkbox" id="certify"> <span>Je certifie l’exactitude des informations fournies et j’accepte qu’elles soient transmises au service concerné.</span>
+          </label>
+          <p class="field-error hidden" id="certify-err" style="margin-top:6px">Merci de cocher cette case pour envoyer la demande.</p>
+        </section>
+
+        <div class="actions">
+          <button type="button" class="btn btn-ghost" id="prev" data-od-id="btn-prev">Précédent</button>
+          <div class="sel-sum" id="sel-sum" aria-live="polite" data-od-id="selection-summary"></div>
+          <button type="button" class="btn btn-primary" id="next" data-od-id="btn-next">Continuer</button>
+        </div>
+      </form>
+
+      <aside class="card route" aria-live="polite" data-od-id="routing-preview">
+        <p class="eyebrow">Acheminement automatique</p>
+        <div id="route" style="margin-top:var(--space-3)"></div>
+      </aside>
+    </div>
+  </div>
+
+  <section id="done" class="done hidden" data-od-id="submit-success">
+    <div class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h1>Demande envoyée</h1>
+    <div class="ref mono" id="done-ref"></div>
+    <p class="lead" id="done-text"></p>
+    <div class="row wrap" style="justify-content:center;margin-top:var(--space-6)">
+      <a class="btn btn-primary" id="done-track" href="mes-demandes.html" data-od-id="btn-track">Suivre ma demande</a>
+      <a class="btn btn-secondary" href="nouvelle-demande.html">Faire une autre demande</a>
+    </div>
+  </section>
+</main>
+
+<script src="assets/portail.js"></script>
+<script>
+(function () {
+  P.mountStudent('nouvelle');
+  const $ = s => document.querySelector(s);
+  let step = 1, typeId = null, data = {}, files = {}, touched = false, submitted = false;
+
+  $('#id-name').textContent = P.ME.name; $('#id-num').textContent = P.ME.id; $('#id-prog').textContent = P.ME.programme;
+
+  // Étape 1 — cartes de type
+  $('#types').innerHTML = P.TYPES.map(t =>
+    '<label class="type-card" data-od-id="type-card-' + t.id + '"><input type="radio" name="type" value="' + t.id + '"><span class="tick" aria-hidden="true"></span>' +
+    '<h3>' + t.label + '</h3><p>' + t.desc + '</p><span class="type-foot"><span class="meta">' + P.SERVICES[t.service] + '</span><span class="sla-pill">' + t.sla + ' j ouvrés</span></span></label>').join('');
+  const pre = new URLSearchParams(location.search).get('type');
+  document.querySelectorAll('input[name=type]').forEach(inp => {
+    if (inp.value === pre) inp.checked = true;
+    inp.addEventListener('change', () => pick(inp.value));
+  });
+
+  function pick(id) {
+    $('#type-err').classList.add('hidden'); $('#types').classList.remove('need-pick');
+    if (typeId !== id) { typeId = id; data = P.defaultsFor(P.typeById(id)); files = {}; touched = false; renderFields(); }
+    renderRoute(); updateBar();
+  }
+  function updateBar() {
+    const t = typeId && P.typeById(typeId);
+    $('#next').classList.toggle('is-idle', step === 1 && !t);
+    $('#sel-sum').innerHTML = step === 1
+      ? (t ? '<b>' + t.label + '</b>Disponible vers le ' + P.fmtShort(P.dueOf({ type: typeId, data, createdAt: Date.now() })) : '<b>Aucun document choisi</b>Touchez une carte ci-dessus')
+      : '<b>' + t.label + '</b>Étape ' + step + ' sur 3';
+  }
+
+  // Étape 2 — champs adaptatifs
+  function fieldHTML(f) {
+    const v = data[f.id], id = 'f-' + f.id, req = f.required ? '<span class="req" aria-hidden="true">*</span>' : '';
+    const full = ['textarea', 'radio', 'checkbox', 'file', 'switch'].includes(f.type) ? ' full' : '';
+    let ctrl = '';
+    if (f.type === 'select') ctrl = '<select id="' + id + '" data-f="' + f.id + '">' + f.options.map(o => '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>').join('') + '</select>';
+    else if (f.type === 'radio' || f.type === 'checkbox') ctrl = '<div class="chips" role="' + (f.type === 'radio' ? 'radiogroup' : 'group') + '" aria-label="' + f.label + '">' + f.options.map(o => {
+      const on = f.type === 'radio' ? v === o : (v || []).includes(o);
+      return '<label class="chip"><input type="' + f.type + '" name="' + id + '" value="' + P.esc(o) + '" data-f="' + f.id + '"' + (on ? ' checked' : '') + '><span>' + o + '</span></label>'; }).join('') + '</div>';
+    else if (f.type === 'textarea') ctrl = '<textarea id="' + id + '" data-f="' + f.id + '" rows="3">' + P.esc(v || '') + '</textarea>';
+    else if (f.type === 'switch') return '<label class="switch field full" data-od-id="field-' + f.id + '"><span><span class="label" style="font-weight:500;color:var(--fg-2)">' + f.label + '</span>' + (f.help ? '<span class="field-help" style="display:block">' + f.help + '</span>' : '') + '</span><input type="checkbox" data-f="' + f.id + '"' + (v ? ' checked' : '') + '></label>';
+    else if (f.type === 'file') ctrl = '<div class="file-drop"><input type="file" id="' + id + '" data-f="' + f.id + '" accept=".pdf,.jpg,.jpeg,.png">' + (v ? '<span>' + P.esc(v) + '</span>' : '') + '</div>';
+    else ctrl = '<input type="' + f.type + '" id="' + id + '" data-f="' + f.id + '" value="' + P.esc(v == null ? '' : v) + '"' + (f.min != null ? ' min="' + f.min + '" max="' + f.max + '"' : '') + '>';
+    return '<div class="field' + full + '" data-od-id="field-' + f.id + '" data-wrap="' + f.id + '"><' + (f.type === 'radio' || f.type === 'checkbox' ? 'span class="label"' : 'label for="' + id + '"') + '>' + f.label + req + '</' + (f.type === 'radio' || f.type === 'checkbox' ? 'span' : 'label') + '>' + ctrl +
+      (f.help ? '<span class="field-help">' + f.help + '</span>' : '') + '<span class="field-error hidden" data-err="' + f.id + '"></span></div>';
+  }
+  let shown = new Set();
+  function renderFields() {
+    if (!typeId) return;
+    const t = P.typeById(typeId);
+    const vis = t.fields.filter(f => !f.showIf || f.showIf(data));
+    const next = new Set(vis.map(f => f.id));
+    $('#fields').innerHTML = vis.map(fieldHTML).join('');
+    vis.forEach(f => { if (shown.size && !shown.has(f.id)) document.querySelector('[data-wrap="' + f.id + '"]')?.classList.add('appear'); });
+    shown = next;
+    if (touched) validate();
+  }
+  $('#fields').addEventListener('input', onField);
+  $('#fields').addEventListener('change', onField);
+  function onField(e) {
+    const el = e.target, k = el.dataset.f; if (!k) return;
+    const f = P.typeById(typeId).fields.find(x => x.id === k);
+    if (f.type === 'checkbox') data[k] = [...document.querySelectorAll('input[name="f-' + k + '"]:checked')].map(i => i.value);
+    else if (f.type === 'switch') data[k] = el.checked;
+    else if (f.type === 'file') { files[k] = el.files[0] || null; data[k] = el.files[0] ? el.files[0].name : ''; }
+    else if (f.type === 'number') data[k] = +el.value;
+    else data[k] = el.value;
+    // Re-rendre seulement si la visibilité change (ne pas casser la saisie en cours)
+    const vis = P.typeById(typeId).fields.filter(x => !x.showIf || x.showIf(data)).map(x => x.id).join();
+    if (vis !== [...shown].join()) renderFields();
+    else if (touched) validate();
+    renderRoute();
+  }
+
+  function validate() {
+    const t = P.typeById(typeId); let ok = true;
+    t.fields.filter(f => !f.showIf || f.showIf(data)).forEach(f => {
+      const v = data[f.id]; let msg = '';
+      if (f.required && (v == null || (typeof v === 'string' && !v.trim()) || (Array.isArray(v) && !v.length))) msg = f.type === 'checkbox' ? 'Sélectionnez au moins une option.' : f.type === 'file' ? 'Ce justificatif est obligatoire.' : 'Ce champ est obligatoire.';
+      else if (f.type === 'number' && (!Number.isInteger(v) || v < f.min || v > f.max)) msg = 'Saisissez un entier entre ' + f.min + ' et ' + f.max + '.';
+      else if (f.type === 'email' && v && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) msg = 'Adresse e-mail invalide.';
+      else if (f.id === 'fin' && v && data.debut && v <= data.debut) msg = 'La date de fin doit suivre la date de début.';
+      const err = document.querySelector('[data-err="' + f.id + '"]'), wrap = document.querySelector('[data-wrap="' + f.id + '"]');
+      if (err) { err.textContent = msg; err.classList.toggle('hidden', !msg); }
+      if (wrap) wrap.classList.toggle('invalid', !!msg);
+      if (msg) ok = false;
+    });
+    return ok;
+  }
+
+  // Aperçu d'acheminement
+  function renderRoute() {
+    $('.route').classList.toggle('is-empty', !typeId);
+    if (!typeId) { $('#route').innerHTML = '<p class="body-muted body-sm">Choisissez un type de document : le service compétent et le délai de traitement s’afficheront ici.</p>'; return; }
+    const t = P.typeById(typeId), fake = { type: typeId, data, createdAt: Date.now() };
+    const sla = P.slaOf(fake), files = t.fields.filter(f => f.type === 'file' && f.required && (!f.showIf || f.showIf(data)));
+    $('#route').innerHTML = '<dl><div><dt>Service destinataire</dt><dd>' + P.SERVICES[t.service] + '</dd></div>' +
+      '<div><dt>Disponibilité estimée</dt><dd class="big">' + P.fmtShort(P.dueOf(fake)) + '</dd><dd class="meta" style="font-weight:400">Délai cible : ' + sla + ' jours ouvrés' + (t.extraSla && t.extraSla(data) ? ' (dont +' + t.extraSla(data) + ' j traduction)' : '') + '</dd></div>' +
+      '<div class="card-body-extra"><dt>Justificatifs à joindre</dt><dd style="font-weight:400" class="body-sm">' + (files.length ? files.map(f => f.label).join('<br>') : 'Aucun') + '</dd></div>' +
+      '<div class="flow card-body-extra" aria-label="Étapes du workflow"><span>Soumise</span>→<span>En cours</span>→<span>Prête</span></div></dl>';
+  }
+
+  function go(n) {
+    step = n;
+    ['#step1', '#step2', '#step3'].forEach((s, i) => $(s).classList.toggle('hidden', i + 1 !== n));
+    ['#st1', '#st2', '#st3'].forEach((s, i) => { $(s).className = i + 1 < n ? 'done' : i + 1 === n ? 'on' : ''; });
+    $('#title').textContent = n === 1 ? 'Quel document vous faut-il ?' : n === 2 ? P.typeById(typeId).label : 'Vérifiez avant d’envoyer';
+    $('#prev').classList.toggle('hidden', n === 1);
+    updateBar();
+    $('#next').textContent = n === 3 ? 'Envoyer la demande' : 'Continuer';
+    if (n === 3) {
+      const t = P.typeById(typeId);
+      $('#rv-title').textContent = t.label;
+      const rows = [['Demandeur', P.ME.name + ' · ' + P.ME.id]].concat(P.dataRows({ type: typeId, data }));
+      const c = $('#commentaire').value.trim(); if (c) rows.push(['Commentaire', c]);
+      $('#recap').innerHTML = rows.map(([k, v]) => '<dt>' + k + '</dt><dd>' + P.esc(v) + '</dd>').join('');
+    }
+    window.scrollTo({ top: 0 });
+  }
+  $('#prev').addEventListener('click', () => go(step - 1));
+  document.addEventListener('click', e => { const g = e.target.closest('[data-goto]'); if (g) go(+g.dataset.goto); });
+
+  // Clic direct : l'aperçu intégré peut bloquer l'envoi de formulaire (iframe sandbox sans allow-forms)
+  $('#next').addEventListener('click', onNext);
+  $('#form').addEventListener('submit', onNext);
+  function onNext(e) {
+    e.preventDefault();
+    if (submitted) return;
+    if (step === 1) {
+      // Relit la sélection dans le DOM : le bouton fonctionne même si l'événement change a été manqué
+      const checked = document.querySelector('input[name=type]:checked');
+      if (checked) pick(checked.value);
+      if (!typeId) {
+        $('#type-err').classList.remove('hidden'); $('#types').classList.add('need-pick');
+        window.scrollTo({ top: $('#types').getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' });
+        return;
+      }
+      go(2);
+    }
+    else if (step === 2) { touched = true; if (validate()) go(3); else { const first = document.querySelector('.field.invalid input, .field.invalid select, .field.invalid textarea'); first && first.focus(); } }
+    else {
+      if (!$('#certify').checked) { $('#certify-err').classList.remove('hidden'); return; }
+      const c = $('#commentaire').value.trim(); if (c) data.commentaire = c;
+      submitted = true;
+      let req;
+      try { req = P.createRequest(typeId, data, files); } catch (err) { submitted = false; return; }
+      $('#wizard').classList.add('hidden'); $('#done').classList.remove('hidden');
+      $('#done-ref').textContent = req.id;
+      $('#done-text').textContent = 'Votre demande a été transmise automatiquement à ' + P.SERVICES[req.service] + '. Disponibilité estimée le ' + P.fmtDate(P.dueOf(req)) + '. Vous serez notifié·e à chaque changement de statut.';
+      $('#done-track').href = 'mes-demandes.html?id=' + req.id;
+      document.querySelectorAll('.s-tabbar').forEach(n => n.remove()); P.mountStudent('nouvelle');
+    }
+  }
+  $('#certify').addEventListener('change', () => $('#certify-err').classList.add('hidden'));
+
+  if (P.typeById(pre)) pick(pre);
+  renderRoute(); go(typeId ? 2 : 1);
+})();
+</script>
+</body>
+</html>

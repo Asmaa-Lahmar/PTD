@@ -7,18 +7,18 @@
 <link rel="stylesheet" href="assets/portail.css">
 <style>
   .tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5); }
-  .tile { padding: var(--space-5) var(--space-6); background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-md); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .tile { padding: var(--space-5) var(--space-6); background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: 4px; min-width: 0; box-shadow: var(--elev-card); }
   .tile .lbl { font-size: var(--text-sm); color: var(--muted); }
-  .tile .val { font-family: var(--font-display); font-size: clamp(34px, 3.4vw, 46px); line-height: 1.1; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .tile .val { font-family: var(--font-display); font-size: clamp(26px, 2.4vw, 32px); line-height: 1.15; font-weight: 700; font-variant-numeric: tabular-nums; }
   .tile .val small { font-size: .45em; color: var(--muted); margin-left: 4px; font-family: var(--font-body); }
   .tile .sub { font-size: 13px; color: var(--meta); }
   .tile .sub b { font-weight: 500; color: var(--fg-2); }
   .meter { position: relative; height: 8px; border-radius: 99px; background: var(--surface-warm); margin-top: 8px; }
   .meter i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--success); }
   .meter i.mid { background: var(--warn); } .meter i.low { background: var(--danger); }
-  .meter em { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--fg); border-radius: 2px; }
+  .meter em { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--fg-2); border-radius: 2px; }
   .d-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: var(--space-5); margin-bottom: var(--space-5); }
-  .chart-card h2 { font-size: 21px; }
+  .chart-card h2 { font-size: 16px; }
   .chart-card .row-between { margin-bottom: var(--space-5); align-items: flex-start; }
   .legend { display: flex; gap: var(--space-4); font-size: 12px; color: var(--muted); flex-wrap: wrap; }
   .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
@@ -27,11 +27,11 @@
   .hbar .track { display: flex; height: 22px; border-radius: 6px; overflow: hidden; background: var(--bg); }
   .hbar .track span { height: 100%; transition: width var(--motion-base) var(--ease-standard); }
   .hbar .n { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
-  .s-done { background: var(--fg-2); } .s-open { background: var(--ring-warm); } .s-ref { background: var(--danger); }
+  .s-done { background: var(--accent); } .s-open { background: var(--ring-warm); } .s-ref { background: var(--fg-2); }
   .cols { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; align-items: end; height: 200px; padding-top: 18px; border-bottom: 1px solid var(--border-soft); }
   .col { position: relative; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; }
-  .col span { display: block; background: var(--fg-2); border-radius: 4px 4px 0 0; min-height: 2px; transition: height var(--motion-base) var(--ease-standard); }
-  .col.now span { background: repeating-linear-gradient(135deg, var(--fg-2) 0 4px, var(--muted) 4px 8px); }
+  .col span { display: block; background: var(--chart); border-radius: 4px 4px 0 0; min-height: 2px; transition: height var(--motion-base) var(--ease-standard); }
+  .col.now span { background: repeating-linear-gradient(135deg, var(--chart) 0 4px, var(--mint) 4px 8px); box-shadow: inset 0 0 0 1.5px var(--chart); }
   .col b { position: absolute; left: 0; right: 0; text-align: center; font-size: 12px; font-weight: 500; color: var(--fg-2); font-variant-numeric: tabular-nums; }
   .col-labels { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 6px; font-size: 11px; color: var(--meta); text-align: center; }
   .sla-bar { display: inline-block; width: 80px; height: 6px; border-radius: 99px; background: var(--surface-warm); position: relative; vertical-align: middle; margin-right: 8px; }

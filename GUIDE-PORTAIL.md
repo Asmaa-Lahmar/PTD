@@ -55,7 +55,7 @@ python serveur/test_portail.py
 
 ## Modifications apportées au front
 
-L'apparence n'a pas changé. Ajouts et corrections :
+Ajouts et corrections :
 
 - `assets/portail.js` : le stockage localStorage est remplacé par l'API ; les écrans gardent les mêmes appels `P.*`.
 - `connexion.html` (nouveau) : page de connexion dans le style du portail.
@@ -67,6 +67,8 @@ L'apparence n'a pas changé. Ajouts et corrections :
 - **Bug corrigé** (mes demandes) : le message « Complément envoyé » s'affichait même si l'envoi échouait.
 - **Bug corrigé** (mises à jour en direct) : un rafraîchissement pouvait effacer une réponse en cours de saisie. Il est maintenant différé.
 - Les noms, formations et agents venant de la base sont échappés à l'affichage.
+
+**Système de design** : couleur principale bordeaux (#8b1538), teinte rose pâle pour les mises en avant, gris clair et anthracite, cartes blanches et police sans empattement. Les jetons sont en tête de `assets/portail.css` (`--accent`, `--mint`, `--chart`…). Les écrans reprennent la maquette : accueil à deux espaces, connexion Étudiant / Agent avec « Se souvenir de moi » (session de 30 jours), étapes numérotées, barre latérale claire, graphiques bordeaux, rose et anthracite. Les anciennes chartes sont conservées dans `sauvegarde-design-avant-refonte/` (la version verte dans `assets/portail-vert.css`).
 
 Les originaux sont dans `sauvegarde-portail-avant-serveur/`. L'ancien serveur `serveur/uniflow.py` concerne l'ancienne interface UniFlow (`sauvegarde-uniflow/`) et n'est pas utilisé par ce portail.
 

@@ -7,20 +7,22 @@
 <link rel="stylesheet" href="assets/portail.css">
 <style>
   .wrap-x { max-width: var(--container-max); margin: 0 auto; padding: 0 var(--container-gutter-desktop); }
-  .hero { padding: var(--section-y-tablet) 0 var(--space-12); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-12); align-items: end; }
-  .hero h1 { font-size: clamp(38px, 5.4vw, 64px); line-height: 1.06; }
-  .hero .lead { margin-top: var(--space-5); max-width: 36em; }
-  .pb { padding: var(--space-6); border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border-soft); }
-  .pb p + p { margin-top: var(--space-3); }
-  .pb .eyebrow { margin-bottom: 4px; }
+  .hero { padding: var(--space-12) 0; text-align: center; }
+  .hero h1 { font-size: clamp(28px, 3.4vw, 38px); }
+  .hero .lead { margin-top: var(--space-2); }
+  .entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); max-width: 760px; margin: var(--space-8) auto 0; text-align: left; }
+  .entry { display: flex; flex-direction: column; gap: var(--space-2); }
+  .entry h2 { font-size: 19px; margin-top: var(--space-2); }
+  .entry .btn { margin-top: auto; }
+  .entry p { margin-bottom: var(--space-4); }
   .sec { padding: var(--space-12) 0; border-top: 1px solid var(--border-soft); }
   .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
-  .sec-head h2 { font-size: clamp(28px, 3vw, 40px); }
+  .sec-head h2 { font-size: clamp(22px, 2.4vw, 28px); }
   .screens { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
   .screens.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .scr { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-6); background: var(--surface); border-radius: var(--radius-md); box-shadow: 0 0 0 1px var(--border-soft); color: var(--fg); text-decoration: none !important; transition: box-shadow var(--motion-fast) var(--ease-standard); min-height: 190px; }
   .scr:hover { box-shadow: 0 0 0 1px var(--ring-warm), var(--elev-raised); }
-  .scr h3 { font-size: 24px; }
+  .scr h3 { font-size: 17px; }
   .scr p { color: var(--muted); font-size: 15px; }
   .scr .go { margin-top: auto; font-size: var(--text-sm); color: var(--fg-2); font-weight: 500; }
   .scr:hover .go { color: var(--accent); }
@@ -36,7 +38,7 @@
   .flow .badge { margin-bottom: 8px; }
   .dark { background: var(--fg); color: var(--surface); padding: var(--section-y-tablet) 0; }
   .dark .eyebrow { color: var(--meta); }
-  .dark h2 { color: var(--surface); font-size: clamp(28px, 3vw, 40px); }
+  .dark h2 { color: var(--surface); font-size: clamp(22px, 2.4vw, 28px); }
   .dark .lead { color: var(--surface-warm); opacity: .8; }
   .map { width: 100%; border-collapse: collapse; margin-top: var(--space-8); font-size: 15px; }
   .map th { text-align: left; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--meta); padding: 0 var(--space-4) var(--space-3) 0; border-bottom: 1px solid color-mix(in oklab, var(--fg), var(--surface) 18%); }
@@ -45,7 +47,7 @@
   .map code { font-family: var(--font-mono); font-size: 13px; color: var(--surface); background: color-mix(in oklab, var(--fg), var(--surface) 10%); padding: 1px 6px; border-radius: 4px; }
   .foot { padding: var(--space-8) 0 var(--space-12); display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; align-items: center; }
   @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; gap: var(--space-6); padding-top: var(--space-8); }
+    .hero { padding: var(--space-8) 0; } .entries { grid-template-columns: 1fr; }
     .screens, .screens.two { grid-template-columns: 1fr; }
     .flow { grid-template-columns: 1fr; }
     .flow > div { padding: 0 0 var(--space-5) 44px; }
@@ -55,29 +57,79 @@
     .map tr { display: block; padding: var(--space-4) 0; border-bottom: 1px solid color-mix(in oklab, var(--fg), var(--surface) 12%); }
     .map td { display: block; border: 0; padding: 2px 0; }
   }
+  /* Bloc d'accueil : photo du bâtiment ENSA en arrière-plan */
+  body { overflow-x: clip; }
+  .hero { position: relative; isolation: isolate; overflow-y: clip; padding: clamp(72px, 10vw, 128px) 0 clamp(64px, 8vw, 104px); }
+  .hero::before, .hero::after { content: ""; position: absolute; top: 0; bottom: 0; left: calc(50% - 50vw); right: calc(50% - 50vw); z-index: -1; }
+  .hero::before { background: url("assets/ensa-batiment.jpg") center 35% / cover no-repeat; animation: hero-zoom 24s ease-out both; }
+  .hero::after { background:
+      radial-gradient(ellipse at 50% 30%, rgba(0,0,0,.25), transparent 70%),
+      linear-gradient(180deg, rgba(0,0,0,.72) 0%, rgba(20,6,12,.55) 45%, rgba(0,0,0,.78) 100%); }
+  @keyframes hero-zoom { from { transform: scale(1.08); } to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .hero::before { animation: none; } }
+  .hero h1 { color: #fff; font-size: clamp(32px, 4.4vw, 52px); letter-spacing: -0.02em; text-shadow: 0 2px 24px rgba(0,0,0,.45); }
+  /* Barre transparente sur la photo, noire dès qu'on fait défiler */
+  .s-top { border-bottom: 0; } /* barre de 64 px pile : la photo commence tout en haut */
+  .s-top:not(.is-scrolled) { background: transparent; }
+  .s-top.is-scrolled { box-shadow: 0 6px 24px rgba(0, 0, 0, .35); }
+  /* Logo ENSA : caché en haut de page, apparaît quand la barre devient noire */
+  .s-top .brand-scroll { grid-column: 1; justify-self: start; opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s; }
+  .s-top.is-scrolled .brand-scroll { opacity: 1; visibility: visible; transform: none; transition: opacity .3s ease, transform .3s ease, visibility 0s; }
+  .s-top .brand-scroll img { display: block; height: 44px; width: auto; }
+  @media (max-width: 760px) { .s-top .brand-scroll img { height: 36px; } }
+  .hero { margin-top: -64px; padding-top: calc(64px + clamp(64px, 9vw, 112px)); }
+  @media (max-width: 760px) { .hero { margin-top: -56px; padding-top: calc(56px + 56px); } }
+  /* Cartes d’accès : verre sombre, icône en dégradé */
+  .hero .entries { gap: var(--space-6); max-width: 880px; }
+  .hero .entry { position: relative; overflow: hidden; padding: 32px; gap: 10px; border-radius: 22px; color: #fff;
+    background: linear-gradient(160deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,.05) 55%, rgba(139,21,56,.10) 100%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%); backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid rgba(255,255,255,.18);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 24px 60px rgba(0,0,0,.40);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .35s; }
+  .hero .entry::after { content: ""; position: absolute; width: 260px; height: 260px; right: -90px; top: -110px; border-radius: 50%; background: radial-gradient(circle, rgba(210,58,104,.45), transparent 70%); opacity: .55; transition: opacity .35s, transform .5s; pointer-events: none; }
+  .hero .entry:hover { transform: translateY(-6px); border-color: rgba(255,255,255,.32); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 34px 80px rgba(0,0,0,.50); }
+  .hero .entry:hover::after { opacity: .9; transform: scale(1.15); }
+  .hero .entry .icon-chip { width: 52px; height: 52px; border-radius: 16px; color: #fff; background: linear-gradient(135deg, #c22a5a, #6d0f2b); box-shadow: 0 10px 24px rgba(139,21,56,.55), inset 0 1px 0 rgba(255,255,255,.3); }
+  .hero .entry .icon-chip svg { width: 24px; height: 24px; }
+  .hero .entry h2 { color: #fff; font-size: 22px; margin-top: var(--space-4); letter-spacing: -0.01em; }
+  .hero .entry p { color: rgba(255,255,255,.74); font-size: 15.5px; line-height: 1.6; margin-bottom: var(--space-6); }
+  .hero .entry .btn { height: 50px; border-radius: 14px; font-weight: 600; background: #fff; color: #6d0f2b; box-shadow: 0 8px 22px rgba(0,0,0,.25); transition: background .25s, color .25s, box-shadow .25s; }
+  .hero .entry .btn:hover { background: linear-gradient(135deg, #c22a5a, #8b1538); color: #fff; box-shadow: 0 12px 30px rgba(139,21,56,.55); }
+  .hero .entry .btn svg { transition: transform .25s; }
+  .hero .entry .btn:hover svg { transform: translateX(5px); }
+  .hero .entry .btn:focus-visible { outline: 3px solid rgba(255,255,255,.7); outline-offset: 3px; }
+  /* Alignement : icône et titre sur une même ligne, texte et bouton dessous */
+  .hero .entry { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto 1fr auto; column-gap: 16px; row-gap: 18px; align-items: center; }
+  .hero .entry .icon-chip { grid-column: 1; grid-row: 1; }
+  .hero .entry h2 { grid-column: 2; grid-row: 1; margin: 0; line-height: 1.25; }
+  .hero .entry p { grid-column: 1 / -1; grid-row: 2; align-self: start; margin: 0; }
+  .hero .entry .btn { grid-column: 1 / -1; grid-row: 3; margin-top: 6px; }
+  @media (prefers-reduced-motion: reduce) { .hero .entry, .hero .entry::after, .hero .entry .btn svg { transition: none; } .hero .entry:hover { transform: none; } }
   @media (max-width: 600px) { .wrap-x { padding: 0 var(--container-gutter-phone); } }
 </style>
 </head>
 <body>
-<header class="s-top"><div class="s-top-inner"><a class="brand" href="index.html"><b>Portail Scolarité</b><small>Université — nom à préciser</small></a><span class="badge plain" style="margin-left:auto">Prototype</span></div></header>
+<header class="s-top"><div class="s-top-inner"><a class="brand brand-scroll" href="index.html" aria-label="Portail Scolarité — accueil" tabindex="-1"><img class="brand-logo-img" src="assets/logo-ensa-khouribga.png" alt="ENSA Khouribga"></a><nav class="s-nav" aria-label="Navigation principale"><a href="index.html" aria-current="page">Accueil</a><a href="#workflow">Fonctionnement</a><a href="connexion.html">Connexion</a></nav></div></header>
+<script>(function () { var h = document.querySelector(".s-top"); function f() { var s = window.scrollY > 10; h.classList.toggle("is-scrolled", s); var b = h.querySelector(".brand-scroll"); if (b) b.tabIndex = s ? 0 : -1; } f(); window.addEventListener("scroll", f, { passive: true }); })();</script>
 
 <main>
   <div class="wrap-x">
     <section class="hero" data-od-id="launcher-hero">
-      <div>
-        <p class="eyebrow">Demandes administratives étudiantes</p>
-        <h1 data-od-id="launcher-title">Une seule porte d’entrée pour chaque document de scolarité.</h1>
-        <p class="lead">L’étudiant·e dépose sa demande en ligne, le workflow la dirige vers le bon service, et chacun suit l’avancement en temps réel, du dépôt jusqu’au document prêt.</p>
-        <div class="row wrap" style="margin-top:var(--space-6)">
-          <a class="btn btn-primary" href="nouvelle-demande.html" data-od-id="cta-start">Commencer par une demande</a>
-          <a class="btn btn-secondary" href="file-traitement.html">Ouvrir le back-office</a>
-        </div>
-      </div>
-      <div class="pb" data-od-id="problem-solution">
-        <p class="eyebrow">Avant</p>
-        <p class="body-muted">Des demandes dispersées entre e-mails, formulaires papier et passages au guichet ; aucune visibilité sur leur avancement.</p>
-        <p class="eyebrow" style="margin-top:var(--space-4)">Avec le portail</p>
-        <p>Un formulaire qui s’adapte au document, un acheminement automatique, des notifications à chaque étape et des indicateurs de délai pour la scolarité.</p>
+      <h1 data-od-id="launcher-title">Portail Scolarité</h1>
+      <div class="entries">
+        <article class="card entry" data-od-id="entry-student">
+          <span class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></span>
+          <h2>Espace étudiant</h2>
+          <p class="body-muted">Accédez à vos demandes, vos documents et à votre profil.</p>
+          <a class="btn btn-primary btn-block" href="connexion.html?espace=etudiant" data-od-id="cta-student">Se connecter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </article>
+        <article class="card entry" data-od-id="entry-agent">
+          <span class="icon-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
+          <h2>Espace scolarité</h2>
+          <p class="body-muted">Traitez les demandes, gérez les dossiers étudiants et suivez l’activité.</p>
+          <a class="btn btn-primary btn-block" href="connexion.html?espace=agent" data-od-id="cta-agent">Se connecter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </article>
       </div>
     </section>
 
@@ -101,7 +153,7 @@
       </div>
     </section>
 
-    <section class="sec" data-od-id="workflow">
+    <section class="sec" id="workflow" data-od-id="workflow">
       <div class="sec-head"><div><p class="eyebrow">Cycle de vie d’une demande</p><h2>Le workflow automatisé</h2></div><p class="meta" style="max-width:28em">Chaque transition déclenche une notification à l’étudiant·e et s’inscrit dans l’historique.</p></div>
       <div class="flow">
         <div><span class="badge st-soumise">Soumise</span><h4>Dépôt</h4><p>Formulaire validé, référence attribuée, accusé de réception.</p></div>
@@ -111,49 +163,8 @@
         <div><span class="badge st-prete">Prête</span> <span class="badge st-refusee">Refusée</span><h4>Clôture</h4><p>Document mis à disposition, ou refus motivé avec la marche à suivre.</p></div>
       </div>
     </section>
-
-    <section class="sec" data-od-id="demo-script">
-      <div class="sec-head"><div><p class="eyebrow">Démonstration en 2 minutes</p><h2>Scénario conseillé</h2></div></div>
-      <ol class="stack-3 body-muted" style="padding-left:1.2em;margin:0;max-width:46em;font-size:17px">
-        <li><a href="nouvelle-demande.html?type=releve">Déposer un relevé de notes</a> : choisir « Anglais » fait apparaître un champ supplémentaire et allonge le délai estimé.</li>
-        <li>Dans la <a href="file-traitement.html">file de traitement</a>, ouvrir la demande d’Inès Benali, la prendre en charge puis demander un complément.</li>
-        <li>Revenir aux <a href="notifications.html">notifications</a> étudiantes : le message est arrivé ; y répondre depuis <a href="mes-demandes.html">Mes demandes</a>.</li>
-        <li>Marquer la demande comme prête, puis voir l’effet sur le <a href="tableau-de-bord.html">tableau de bord</a>.</li>
-      </ol>
-      <p class="meta" style="margin-top:var(--space-4)">Astuce : ouvrez l’espace étudiant et le back-office dans deux onglets : ils se synchronisent en direct.</p>
-    </section>
-  </div>
-
-  <section class="dark" data-od-id="power-platform">
-    <div class="wrap-x">
-      <p class="eyebrow">Transposition low-code</p>
-      <h2>Du prototype à Power Apps + Power Automate</h2>
-      <p class="lead" style="margin-top:var(--space-3);max-width:40em">Chaque brique du prototype a son équivalent direct dans Microsoft Power Platform.</p>
-      <table class="map">
-        <thead><tr><th>Brique</th><th>Power Platform</th><th>Détail de mise en œuvre</th></tr></thead>
-        <tbody>
-          <tr><td>Données</td><td>Dataverse</td><td>Tables <code>Demande</code>, <code>TypeDocument</code> (service, délai cible, champs requis), <code>Historique</code>, <code>Notification</code> ; colonne de choix <code>Statut</code>.</td></tr>
-          <tr><td>Formulaire intelligent</td><td>Power Apps (canevas)</td><td>Propriété <code>Visible</code> de chaque champ conditionnée au type et aux réponses ; <code>Patch()</code> à l’envoi ; profil pré-rempli via <code>User()</code>.</td></tr>
-          <tr><td>Acheminement</td><td>Power Automate</td><td>Déclencheur « Lorsqu’une ligne est ajoutée » → recherche du <code>TypeDocument</code> → affectation du service et calcul de l’échéance en jours ouvrés.</td></tr>
-          <tr><td>Notifications</td><td>Power Automate</td><td>Déclencheur « Lorsqu’une ligne est modifiée » filtré sur <code>Statut</code> → e-mail Outlook, message Teams, SMS selon les préférences.</td></tr>
-          <tr><td>Complément / relances</td><td>Approbations + flux planifié</td><td>Flux quotidien : relance des compléments sans réponse sous 3 jours et alerte des responsables sur les demandes proches de l’échéance.</td></tr>
-          <tr><td>Tableau de bord</td><td>Power BI ou écran Power Apps</td><td>Mesures : en attente, délai moyen (<code>NETWORKDAYS</code>), % dans le délai cible, volume par catégorie et par semaine.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <div class="wrap-x foot">
-    <p class="meta">Données enregistrées sur le serveur du portail · <a href="connexion.html">Se connecter</a></p>
-    <button class="btn btn-ghost btn-sm" id="reset" data-od-id="btn-reset-demo">Réinitialiser les données de démonstration</button>
   </div>
 </main>
 <script src="assets/portail.js"></script>
-<script>
-  document.getElementById('reset').addEventListener('click', () => {
-    if (!confirm('Remplacer toutes les demandes par les données de démonstration ?')) return;
-    P.reset(); P.toast('Données de démonstration réinitialisées.');
-  });
-</script>
 </body>
 </html>

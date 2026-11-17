@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="assets/portail.css">
 <style>
   .md-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
-  .alert-card { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5); border-radius: var(--radius-md); background: var(--accent-tint); color: var(--fg); }
+  .alert-card { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5); border-radius: var(--radius-lg); background: var(--mint); border: 1px solid var(--border-soft); color: var(--fg); }
   .alert-card b { font-weight: 600; }
   .md-grid { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: var(--space-6); align-items: start; }
   .req-list { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-4); }
   .req-item { display: block; width: 100%; text-align: left; border: 0; cursor: pointer; padding: var(--space-4); background: var(--surface); border-radius: var(--radius-md); box-shadow: 0 0 0 1px var(--border-soft); transition: box-shadow var(--motion-fast) var(--ease-standard); }
-  .req-item:hover { box-shadow: 0 0 0 1px var(--ring-warm), var(--elev-raised); }
-  .req-item[aria-current=true] { box-shadow: 0 0 0 2px var(--fg); }
-  .req-item h3 { font-size: 18px; margin: 6px 0 4px; }
+  .req-item:hover { box-shadow: 0 0 0 1px var(--ring-warm), var(--elev-raised); background: var(--surface); }
+  .req-item[aria-current=true] { background: var(--surface); box-shadow: 0 0 0 1.5px var(--accent), var(--elev-raised); }
+  .req-item h3 { font-size: 15px; margin: 6px 0 4px; }
   .req-item .steps { margin-top: var(--space-3); }
   .req-item .step { font-size: 0; gap: 0; }
   .empty { padding: var(--space-8) var(--space-4); text-align: center; color: var(--muted); }
@@ -22,13 +22,13 @@
   .detail { position: sticky; top: 88px; }
   .detail h2 { font-size: var(--text-2xl); line-height: 1.15; }
   .d-sec { padding-top: var(--space-5); margin-top: var(--space-5); border-top: 1px solid var(--border-soft); }
-  .d-sec > h3 { font-size: 18px; margin-bottom: var(--space-4); }
+  .d-sec > h3 { font-size: 15px; margin-bottom: var(--space-4); }
   .action { padding: var(--space-5); border-radius: var(--radius-md); background: var(--bg); margin-top: var(--space-5); }
-  .action.ask { background: var(--accent-tint); }
-  .action.ok { background: var(--success-tint); }
+  .action.ask { background: var(--mint); }
+  .action.ok { background: var(--mint); }
   .action.ko { background: var(--danger-tint); }
   .action .from { font-size: 13px; color: var(--muted); }
-  .action blockquote { margin: 6px 0 var(--space-4); font-family: var(--font-display); font-size: 18px; line-height: 1.45; }
+  .action blockquote { margin: 6px 0 var(--space-4); font-family: var(--font-display); font-size: 16px; font-weight: 500; line-height: 1.5; }
   .eta { display: flex; gap: var(--space-6); flex-wrap: wrap; margin-top: var(--space-4); font-size: var(--text-sm); }
   .eta span { display: block; color: var(--meta); font-size: 12px; }
   .eta b { font-weight: 500; }
@@ -52,7 +52,7 @@
 <body>
 <header id="s-top"></header>
 <main class="s-main" data-od-id="my-requests">
-  <div class="md-head">
+  <div class="md-head page-banner">
     <div><p class="eyebrow">Suivi</p><h1 data-od-id="my-requests-title">Mes demandes</h1></div>
     <a class="btn btn-primary" href="nouvelle-demande.html" data-od-id="btn-new-request">${plus} Nouvelle demande</a>
   </div>

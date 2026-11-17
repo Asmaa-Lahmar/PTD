@@ -91,7 +91,7 @@ def main():
     check(agent.login(SAMIRA, creds[SAMIRA])[0] == 200, 'connexion agent')
     check(Client(base, 'etudiant').req('GET', '/api/state')[0] == 401, 'API refusée sans session')
     st, body, h = Client(base, 'etudiant').req('GET', '/mes-demandes.html', raw=True)
-    check(b'id="form"' in body and 'Accédez à votre espace'.encode() in body, 'page protégée redirigée vers la connexion')
+    check(b'id="form"' in body and b'login-title' in body, 'page protégée redirigée vers la connexion')
     st, body, h = Client(base, 'agent').req('GET', '/serveur/portail.py', raw=True)
     check(st == 404, 'sources serveur non exposées')
     st, body, h = ines.req('GET', '/file-traitement.html', raw=True)
